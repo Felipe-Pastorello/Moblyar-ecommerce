@@ -2,25 +2,26 @@ package ecommerce.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import jakarta.persistence.Entity;
+
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Produto {
+public class ItemPedido {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String nome;
-
-    private String descricao;
-
+    private Integer quantidade;
     private Double preco;
 
-    private Integer estoque;
+    @ManyToOne
+    @JoinColumn(name = "pedido_id")
+    private Pedidos pedido;
 
     @ManyToOne
-    @JoinColumn(name = "categoria_id")
-    private Categorias categoria;
+    @JoinColumn(name = "produto_id")
+    private Produto produto;
 }
