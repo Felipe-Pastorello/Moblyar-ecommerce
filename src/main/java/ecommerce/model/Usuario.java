@@ -18,8 +18,13 @@ public class Usuario {
     private String email;
     private String senha;
 
-    @OneToMany(mappedBy = "usuario")
-    private List<Endereco> endereco;
+    @ManyToMany
+    @JoinTable(
+            name = "usuario_endereco",
+            joinColumns = @JoinColumn(name = "usuario_id"),
+            inverseJoinColumns = @JoinColumn(name = "endereco_id")
+    )
+    private List<Endereco> enderecos;
 
     @OneToOne(mappedBy = "usuario")
     private Carrinho carrinho;

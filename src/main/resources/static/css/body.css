@@ -1,0 +1,31 @@
+:root {
+    --bs-brand: #D30000;
+}
+
+.bg-red {
+    background-color: var(--bs-brand) !important;
+}
+
+.text-red {
+    color: var(--bs-brand) !important;
+}
+
+.border-red {
+    border-color: var(--bs-brand) !important;
+}
+
+.btn-red {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: var(--bs-brand);
+    --bs-btn-border-color: var(--bs-brand);
+
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #b30000;
+    --bs-btn-hover-border-color: #b30000;
+
+    --bs-btn-active-bg: #960000;
+    --bs-btn-active-border-color: #960000;
+
+    --bs-btn-disabled-bg: #D30000;
+    --bs-btn-disabled-border-color: #D30000;
+}

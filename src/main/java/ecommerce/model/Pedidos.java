@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "orders") // "order" é palavra reservada
+@Table(name = "pedidos")
 public class Pedidos {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,7 +20,7 @@ public class Pedidos {
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")
-    private Usuario user;
+    private Usuario usuario;
 
     @OneToMany(mappedBy = "pedidos")
     private List<ItemPedido> items;

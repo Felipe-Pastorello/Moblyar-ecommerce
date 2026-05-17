@@ -2,6 +2,8 @@ package ecommerce.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -17,7 +19,6 @@ public class Endereco {
     private String estado;
     private String cep;
 
-    @ManyToOne
-    @JoinColumn(name = "usuario_id")
-    private Usuario usuario;
+    @ManyToMany(mappedBy = "enderecos")
+    private List<Usuario> usuarios;
 }
