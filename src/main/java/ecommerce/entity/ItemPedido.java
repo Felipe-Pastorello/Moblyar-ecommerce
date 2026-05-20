@@ -1,22 +1,25 @@
-package ecommerce.model;
+package ecommerce.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
 import jakarta.persistence.Entity;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ImagemProduto {
+public class ItemPedido {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String nomeArquivo;
+    private Integer quantidade;
+    private Double preco;
+
+    @ManyToOne
+    @JoinColumn(name = "pedido_id")
+    private Pedidos pedidos;
 
     @ManyToOne
     @JoinColumn(name = "produto_id")

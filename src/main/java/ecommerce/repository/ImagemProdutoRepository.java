@@ -1,6 +1,6 @@
 package ecommerce.repository;
 
-import ecommerce.model.ImagemProduto;
+import ecommerce.entity.ImagemProduto;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ImagemProdutoRepository

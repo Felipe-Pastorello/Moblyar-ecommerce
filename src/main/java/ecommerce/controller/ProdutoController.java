@@ -1,7 +1,7 @@
 package ecommerce.controller;
 
-import ecommerce.model.ImagemProduto;
-import ecommerce.model.Produto;
+import ecommerce.entity.ImagemProduto;
+import ecommerce.entity.Produto;
 import ecommerce.service.ProdutoService;
 
 import org.springframework.stereotype.Controller;
@@ -33,43 +33,31 @@ public class ProdutoController {
             Produto produto,
             @RequestParam(value = "arquivos", required = false)
             MultipartFile[] arquivos) throws Exception {
-
-        if(arquivos != null){
-
-            String pastaUploads =
-                    System.getProperty("user.dir")
-                            + "/src/main/resources/static/uploads/";
-
-            File pasta = new File(pastaUploads);
-
-            if(!pasta.exists()){
-                pasta.mkdirs();
-            }
-
-            for(MultipartFile arquivo : arquivos){
-
-                if(!arquivo.isEmpty()){
-
+        if (arquivos != null) {
+            String pastaUploads = "C:/uploads/";
+            for (MultipartFile arquivo : arquivos) {
+                if (!arquivo.isEmpty()) {
                     String nomeArquivo =
-                            UUID.randomUUID() + "_"
+                            UUID.randomUUID()
+                                    + "_"
                                     + arquivo.getOriginalFilename();
-
                     arquivo.transferTo(
-                            new File(pastaUploads + nomeArquivo)
+                            new File(
+                                    pastaUploads
+                                            + nomeArquivo
+                            )
                     );
-
                     ImagemProduto img =
                             new ImagemProduto();
-
-                    img.setNomeArquivo(nomeArquivo);
+                    img.setNomeArquivo(
+                            nomeArquivo
+                    );
 
                     produto.adicionarImagem(img);
                 }
             }
         }
-
         service.save(produto);
-
         return "redirect:/produtos";
     }
 

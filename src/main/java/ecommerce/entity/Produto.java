@@ -1,4 +1,4 @@
-package ecommerce.model;
+package ecommerce.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;

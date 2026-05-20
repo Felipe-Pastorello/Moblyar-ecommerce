@@ -1,5 +1,5 @@
 package ecommerce.service;
-import ecommerce.model.Produto;
+import ecommerce.entity.Produto;
 import ecommerce.repository.ProdutoRepositorio;
 import org.springframework.stereotype.Service;
 import java.util.List;
