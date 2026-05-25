@@ -29,3 +29,13 @@
     --bs-btn-disabled-bg: #D30000;
     --bs-btn-disabled-border-color: #D30000;
 }
+
+.categoria-inativa{
+    opacity: .45;
+    filter: grayscale(30%);
+    transition: .3s;
+}
+
+.categoria-inativa:hover{
+    opacity:.7;
+}

@@ -24,6 +24,8 @@ public class Produto {
 
     private Integer estoque;
 
+    private String status = "ATIVO";
+
     @OneToMany(mappedBy = "produto",
             cascade = CascadeType.ALL,
             orphanRemoval = true)

@@ -16,6 +16,8 @@ public class Categorias {
 
     private String nome;
 
+    private String status = "ATIVO";
+
     @ManyToMany(mappedBy = "categorias")
     private List<Produto> produtos;
 }

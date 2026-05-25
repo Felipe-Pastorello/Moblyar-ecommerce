@@ -1,14 +1,14 @@
 package ecommerce.service;
 import ecommerce.entity.Produto;
-import ecommerce.repository.ProdutoRepositorio;
+import ecommerce.repository.ProdutoRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
 public class ProdutoService {
-    private final ProdutoRepositorio repository;
+    private final ProdutoRepository repository;
 
-    public ProdutoService(ProdutoRepositorio repository) {
+    public ProdutoService(ProdutoRepository repository) {
         this.repository = repository;
     }
 
@@ -26,5 +26,21 @@ public class ProdutoService {
 
     public void delete(Long id){
         repository.deleteById(id);
+    }
+
+    public void toggleStatus(Long id){
+
+        Produto produto =
+                repository.findById(id)
+                        .orElseThrow();
+
+        if(produto.getStatus().equals("ATIVO")){
+            produto.setStatus("INATIVO");
+        }
+        else{
+            produto.setStatus("ATIVO");
+        }
+
+        repository.save(produto);
     }
 }
