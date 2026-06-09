@@ -43,4 +43,8 @@ public class ProdutoService {
 
         repository.save(produto);
     }
+
+    public List<Produto> buscarSemCategoria() {
+        return repository.buscarSemCategoria();
+    }
 }

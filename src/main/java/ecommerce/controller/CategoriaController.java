@@ -2,6 +2,7 @@ package ecommerce.controller;
 
 import ecommerce.entity.Categorias;
 import ecommerce.service.CategoriaService;
+import ecommerce.service.ProdutoService;
 import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,11 +15,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class CategoriaController {
 
     private final CategoriaService service;
+    private final ProdutoService produtoService;
 
     public CategoriaController(
-            CategoriaService service){
+            CategoriaService service, ProdutoService produtoService){
 
         this.service=service;
+        this.produtoService = produtoService;
     }
 
     @GetMapping
@@ -26,7 +29,13 @@ public class CategoriaController {
 
         model.addAttribute(
                 "categorias",
-                service.listAll());
+                service.listAll()
+        );
+
+        model.addAttribute(
+                "produtosSemCategoria",
+                produtoService.buscarSemCategoria()
+        );
 
         return "categorias/list";
     }

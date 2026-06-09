@@ -64,6 +64,25 @@
         </tr>
     </table>
 </div>
+    <div class="card mb-5 p-4">
+        <div class="d-flex justify-content-between">
+            <div>
+                <h5>Sem Categoria</h5>
+                <small>
+                    <span th:text="${#lists.size(produtosSemCategoria)}"></span>
+                    produtos
+                </small>
+            </div>
+        </div>
+        <hr>
+        <table class="table">
+            <tr th:each="p : ${produtosSemCategoria}">
+                <td th:text="${p.nome}"></td>
+                <td th:text="${p.preco}"></td>
+                <td th:text="${p.estoque}"></td>
+            </tr>
+        </table>
+    </div>
 </div>
 <div class="modal fade" id="categoriaModal">
     <div class="modal-dialog">
