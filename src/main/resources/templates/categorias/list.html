@@ -9,6 +9,12 @@
 </head>
 <body>
 <div class="container">
+    <div class="d-flex justify-content-between align-items-center">
+        <h2 class="mb-3">Painel do Administrador</h2>
+        <button class="btn btn-red mb-4" data-bs-toggle="modal" data-bs-target="#categoriaModal" onclick="novaCategoria()">
+            <i class="bi bi-plus-circle me-2"></i>Nova Categoria
+        </button>
+    </div>
     <div class="card mb-5 p-4" th:each="c : ${categorias}" th:classappend="${c.status == 'INATIVO'} ? ' categoria-inativa' : ''">
     <div class="d-flex justify-content-between">
         <div>
@@ -87,7 +93,7 @@
 <div class="modal fade" id="categoriaModal">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form th:action="@{/categorias/save}" method="post">
+            <form id="formCategoria" th:action="@{/categorias/save}" method="post">
                 <div class="modal-header">
                     <h5>Categoria</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal">
@@ -97,9 +103,11 @@
                     <input type="hidden" id="categoriaId" name="id">
                     <label>Nome</label>
                     <input type="text" class="form-control" id="categoriaNome" name="nome">
+                    <small id="erroNome"
+                           class="text-danger"></small>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-success">
+                    <button id="btnSalvar" class="btn btn-success">
                         Salvar
                     </button>
                 </div>
@@ -125,6 +133,88 @@
             });
 
         });
+
+    const nomeInput = document.getElementById("categoriaNome");
+    const erroNome = document.getElementById("erroNome");
+    const btnSalvar = document.getElementById("btnSalvar");
+
+    let nomeValido = true;
+
+    nomeInput.addEventListener("input", async () => {
+
+        if(nomeInput.value.trim() === ""){
+
+            erroNome.textContent =
+                "O nome é obrigatório.";
+
+            btnSalvar.disabled = true;
+
+            nomeValido = false;
+
+            return;
+        }
+
+        const categoriaId =
+            document.getElementById("categoriaId").value;
+
+        const response = await fetch(
+            `/categorias/existe?nome=${encodeURIComponent(nomeInput.value)}&id=${categoriaId}`
+        );
+
+        const existe = await response.json();
+
+        if(existe){
+
+            erroNome.textContent =
+                "Já existe uma categoria com esse nome.";
+
+            btnSalvar.disabled = true;
+
+            nomeValido = false;
+
+        }else{
+
+            erroNome.textContent = "";
+
+            btnSalvar.disabled = false;
+
+            nomeValido = true;
+        }
+    });
+
+    document.getElementById("formCategoria")
+        .addEventListener("submit", function(e){
+
+            if(
+                !nomeValido ||
+                document.getElementById("categoriaNome")
+                    .value.trim() === ""
+            ){
+
+                e.preventDefault();
+
+                erroNome.textContent =
+                    "O nome é obrigatório.";
+            }
+
+        });
+
+    function novaCategoria(){
+
+        document.getElementById(
+            "categoriaId"
+        ).value = "";
+
+        document.getElementById(
+            "categoriaNome"
+        ).value = "";
+
+        erroNome.textContent = "";
+
+        btnSalvar.disabled = false;
+
+        nomeValido = true;
+    }
 </script>
 </body>
 </html>

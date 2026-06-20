@@ -44,22 +44,26 @@
     <div class="modal fade" id="productModal" >
         <div class="modal-dialog">
             <div class="modal-content">
-                <form th:action="@{/produtos/save}" method="post" enctype="multipart/form-data">
+                <form id="formProduto" th:action="@{/produtos/save}" method="post" enctype="multipart/form-data">
                     <div class="modal-header">
                         <h5 class="modal-title">Produto</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <input type="file" name="arquivos" multiple class="form-control">
+                            <input type="file" name="arquivos" id="arquivos" multiple class="form-control">
+                            <div id="imagensExistentes"></div>
                             <small class="text-muted">
                                 Você pode selecionar várias imagens
+                                <br>
                             </small>
+                            <small id="erroImagem" class="text-danger"></small>
                         </div>
                         <input type="hidden" name="id" id="id">
                         <div class="mb-3">
                             <label>Nome</label>
                             <input type="text" name="nome" id="name" class="form-control">
+                            <small id="erroNome" class="text-danger"></small>
                         </div>
                         <label>Categorias</label>
                         <select name="categoriaIds" multiple class="form-select" size="5">
@@ -75,18 +79,21 @@
                         <div class="mb-3">
                             <label>Descrição</label>
                             <input type="text" name="descricao" id="description" class="form-control">
+                            <small id="erroDescricao" class="text-danger"></small>
                         </div>
                         <div class="mb-3">
                             <label>Preço</label>
                             <input type="number" name="preco" id="price" class="form-control">
+                            <small id="erroPreco" class="text-danger"></small>
                         </div>
                         <div class="mb-3">
                             <label>Estoque</label>
                             <input type="number" name="estoque" id="stock" class="form-control">
+                            <small id="erroEstoque" class="text-danger"></small>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-success">Salvar</button>
+                        <button type="submit" id="btnSalvar" class="btn btn-success">Salvar</button>
                     </div>
                 </form>
             </div>
@@ -97,16 +104,96 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     document.querySelectorAll('.btn-editar').forEach(btn => {
-        btn.addEventListener('click', function () {
-            document.getElementById("id").value = this.dataset.id;
+
+        btn.addEventListener('click', async function () {
+
+            const produtoId = this.dataset.id;
+
+            document.getElementById("id").value = produtoId;
             document.getElementById("name").value = this.dataset.name;
             document.getElementById("description").value = this.dataset.description;
             document.getElementById("price").value = this.dataset.price;
             document.getElementById("stock").value = this.dataset.stock;
+
+            const container =
+                document.getElementById(
+                    "imagensExistentes"
+                );
+
+            container.innerHTML = "";
+
+            const response =
+                await fetch(
+                    `/produtos/${produtoId}/imagens`
+                );
+
+            const imagens =
+                await response.json();
+
+            imagens.forEach(img => {
+
+                container.innerHTML += `
+<div
+    class="d-flex align-items-center gap-2 mb-2"
+    data-imagem-id="${img.id}">
+
+    <img
+        src="/uploads/${img.nomeArquivo}"
+        width="80"
+        height="80"
+        class="rounded"
+        style="object-fit:cover">
+
+    <button
+        type="button"
+        class="btn btn-danger btn-sm"
+        onclick="excluirImagem(${img.id})">
+
+        <i class="bi bi-trash"></i>
+
+    </button>
+
+</div>
+`;
+            });
         });
     });
 
+    async function excluirImagem(id){
+
+        if(!confirm("Deseja excluir esta imagem?")){
+            return;
+        }
+
+        try {
+
+            const response = await fetch(
+                `/produtos/imagem/delete/${id}`
+            );
+
+            if(response.ok){
+
+                document
+                    .querySelector(
+                        `[data-imagem-id="${id}"]`
+                    )
+                    ?.remove();
+
+            } else {
+
+                alert("Erro ao excluir imagem.");
+            }
+
+        } catch(e){
+
+            console.error(e);
+
+            alert("Erro ao excluir imagem.");
+        }
+    }
+
     function novoProduto() {
+        document.getElementById("imagensExistentes").innerHTML = "";
         document.getElementById("id").value="";
         document.getElementById("name").value="";
         document.getElementById("description").value="";
@@ -116,7 +203,112 @@
         document.querySelector(
             'input[name="arquivos"]'
         ).value="";
+
+        document.querySelectorAll(".text-danger")
+            .forEach(el => el.textContent = "");
+
+        btnSalvar.disabled = false;
+        nomeValido = true;
     }
+
+    function validarFormulario() {
+
+        let valido = true;
+
+        const nome = document.getElementById("name");
+        const descricao = document.getElementById("description");
+        const preco = document.getElementById("price");
+        const estoque = document.getElementById("stock");
+        const arquivos = document.getElementById("arquivos");
+        const editando = document.getElementById("id").value !== "";
+
+        document.getElementById("erroDescricao").textContent = "";
+        document.getElementById("erroPreco").textContent = "";
+        document.getElementById("erroEstoque").textContent = "";
+        document.getElementById("erroImagem").textContent = "";
+
+        if(nome.value.trim() === ""){
+            document.getElementById("erroNome").textContent =
+                "O nome é obrigatório.";
+            valido = false;
+        }
+
+        if(descricao.value.trim() === ""){
+            document.getElementById("erroDescricao").textContent =
+                "A descrição é obrigatória.";
+            valido = false;
+        }
+
+        if(preco.value === "" || parseFloat(preco.value) <= 0){
+            document.getElementById("erroPreco").textContent =
+                "O preço deve ser maior que zero.";
+            valido = false;
+        }
+
+        if(estoque.value === "" || parseInt(estoque.value) <= 0){
+            document.getElementById("erroEstoque").textContent =
+                "O estoque deve ser maior que zero.";
+            valido = false;
+        }
+
+        const imagensExistentes = document.querySelectorAll("#imagensExistentes [data-imagem-id]");
+        if(
+            arquivos.files.length === 0
+            &&
+            imagensExistentes.length === 0
+        ){
+            document.getElementById("erroImagem").textContent =
+                "O produto deve possuir ao menos uma imagem.";
+
+            valido = false;
+        }
+
+        return valido;
+    }
+
+    const nomeInput = document.getElementById("name");
+    const erroNome = document.getElementById("erroNome");
+    const btnSalvar = document.getElementById("btnSalvar");
+
+    let nomeValido = true;
+
+    nomeInput.addEventListener("input", async () => {
+
+        const response = await fetch(
+            `/produtos/existe?nome=${encodeURIComponent(nomeInput.value)}`
+        );
+
+        const existe = await response.json();
+
+        if(existe){
+
+            erroNome.textContent =
+                "Já existe um produto com esse nome.";
+
+            btnSalvar.disabled = true;
+
+            nomeValido = false;
+
+        }else{
+
+            erroNome.textContent = "";
+
+            btnSalvar.disabled = false;
+
+            nomeValido = true;
+        }
+    });
+
+    document.getElementById("formProduto")
+        .addEventListener("submit", function(e){
+
+            if(!validarFormulario() || !nomeValido){
+                e.preventDefault();
+            }
+
+        });
+
+
 </script>
 </body>
 </html>

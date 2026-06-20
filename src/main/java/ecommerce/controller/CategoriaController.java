@@ -5,10 +5,7 @@ import ecommerce.service.CategoriaService;
 import ecommerce.service.ProdutoService;
 import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/categorias")
@@ -64,5 +61,17 @@ public class CategoriaController {
         service.delete(id);
 
         return "redirect:/categorias";
+    }
+
+    @GetMapping("/existe")
+    @ResponseBody
+    public boolean existeNome(
+            String nome,
+            Long id){
+
+        return service.existeNome(
+                nome,
+                id
+        );
     }
 }

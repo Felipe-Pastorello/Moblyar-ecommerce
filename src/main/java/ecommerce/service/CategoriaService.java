@@ -22,6 +22,7 @@ public class CategoriaService {
 
     public void save(Categorias categoria){
         repository.save(categoria);
+
     }
 
     public Categorias getById(Long id){
@@ -50,4 +51,19 @@ public class CategoriaService {
     public List<Categorias> buscarPorIds(List<Long> ids){
         return repository.findAllById(ids);
     }
-}
+
+    public boolean existeNome(
+            String nome,
+            Long id){
+
+        if(id == null){
+            return repository.existsByNome(nome);
+        }
+
+        return repository
+                .existsByNomeAndIdNot(
+                        nome,
+                        id
+                );
+    }
+    }

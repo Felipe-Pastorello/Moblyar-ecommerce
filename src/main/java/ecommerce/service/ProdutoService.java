@@ -17,6 +17,20 @@ public class ProdutoService {
     }
 
     public Produto save(Produto produto){
+        Produto existente =
+                repository.findByNome(
+                        produto.getNome()
+                );
+
+        if(existente != null &&
+                !existente.getId()
+                        .equals(produto.getId())){
+
+            throw new RuntimeException(
+                    "Já existe um produto com esse nome."
+            );
+        }
+
         return repository.save(produto);
     }
 
@@ -46,5 +60,9 @@ public class ProdutoService {
 
     public List<Produto> buscarSemCategoria() {
         return repository.buscarSemCategoria();
+    }
+
+    public boolean existeNome(String nome){
+        return repository.existsByNome(nome);
     }
 }

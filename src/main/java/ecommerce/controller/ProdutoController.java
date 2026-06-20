@@ -2,6 +2,7 @@ package ecommerce.controller;
 
 import ecommerce.entity.ImagemProduto;
 import ecommerce.entity.Produto;
+import ecommerce.repository.ImagemProdutoRepository;
 import ecommerce.service.ProdutoService;
 import ecommerce.service.CategoriaService;
 
@@ -20,10 +21,13 @@ public class ProdutoController {
 
     private final ProdutoService service;
     private final CategoriaService categoriaService;
+    private final ImagemProdutoRepository imagemRepository;
 
-    public ProdutoController(ProdutoService service, CategoriaService categoriaService) {
+
+    public ProdutoController(ProdutoService service, CategoriaService categoriaService, ImagemProdutoRepository imagemRepository) {
         this.service = service;
         this.categoriaService = categoriaService;
+        this.imagemRepository = imagemRepository;
 
     }
 
@@ -65,8 +69,20 @@ public class ProdutoController {
 
             throws Exception {
 
+        // Se estiver editando, recupera o produto atual
+        if(produto.getId() != null){
 
-        // associa categorias selecionadas
+            Produto existente =
+                    service.getById(
+                            produto.getId()
+                    );
+
+            produto.setImagens(
+                    existente.getImagens()
+            );
+        }
+
+        // Categorias
         if(categoriaIds != null){
 
             produto.setCategorias(
@@ -81,8 +97,7 @@ public class ProdutoController {
             );
         }
 
-
-        // imagens
+        // Novas imagens
         if (arquivos != null) {
 
             String pastaUploads =
@@ -150,5 +165,31 @@ public class ProdutoController {
         service.save(produto);
 
         return "redirect:/categorias";
+    }
+
+    @GetMapping("/existe")
+    @ResponseBody
+    public boolean existeNome(String nome){
+
+        return service.existeNome(nome);
+    }
+
+    @GetMapping("/{id}/imagens")
+    @ResponseBody
+    public List<ImagemProduto> listarImagens(
+            @PathVariable Long id){
+
+        Produto produto =
+                service.getById(id);
+
+        return produto.getImagens();
+    }
+
+    @GetMapping("/imagem/delete/{id}")
+    @ResponseBody
+    public void excluirImagem(
+            @PathVariable Long id){
+
+        imagemRepository.deleteById(id);
     }
 }
