@@ -5,20 +5,26 @@
     <title>Categorias</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/body.css}">
+    <link rel="stylesheet" th:href="@{/css/GerenciarCategorias.css}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 </head>
-<body>
-<div class="container">
+<body style="background-color: #F1F0F5">
+<div class="container py-5 py-lg-8">
     <div class="d-flex justify-content-between align-items-center">
         <h2 class="mb-3">Painel do Administrador</h2>
         <button class="btn btn-red mb-4" data-bs-toggle="modal" data-bs-target="#categoriaModal" onclick="novaCategoria()">
             <i class="bi bi-plus-circle me-2"></i>Nova Categoria
         </button>
     </div>
-    <div class="card mb-5 p-4" th:each="c : ${categorias}" th:classappend="${c.status == 'INATIVO'} ? ' categoria-inativa' : ''">
-    <div class="d-flex justify-content-between">
+    <div class="mb-4">
+        <a th:href="@{/produtos}" class="btn btn-light border border-2">Editar Produtos</a>
+    </div>
+    <div class="card mb-5 p-2 p-sm-4" th:each="c : ${categorias}" th:classappend="${c.status == 'INATIVO'} ? ' categoria-inativa' : ''">
+    <div class="d-grid d-sm-flex justify-content-between">
         <div>
-            <h5 th:text="${c.nome + ' - ' + c.status}"></h5>
+            <div class="d-flex">
+                <i class="bi bi-folder fw-semibold me-2"></i><h5 th:text="${c.nome + ' - ' + c.status}"></h5>
+            </div>
             <small>
                 ID:
                 <span th:text="${c.id}">
@@ -29,48 +35,51 @@
                 produtos
             </small>
         </div>
-        <div>
-            <button class="btn btn-warning btn-editar" data-bs-toggle="modal" data-bs-target="#categoriaModal" th:attr="data-id=${c.id}, data-nome=${c.nome}">
-                Editar
+        <div class="mt-2 mt-sm-0">
+            <button class="btn btn-lightn btn-editar" data-bs-toggle="modal" data-bs-target="#categoriaModal" th:attr="data-id=${c.id}, data-nome=${c.nome}">
+                <i class="bi bi-pencil"></i>
             </button>
             <a th:href="@{/categorias/status/{id}(id=${c.id})}" class="btn" th:classappend="${c.status == 'ATIVO'} ? ' btn-danger' : ' btn-success'">
                 <span th:text="${c.status == 'ATIVO' ? 'Inativar' : 'Ativar'}">
                 </span>
             </a>
-            <a th:href="@{/categorias/delete/{id}(id=${c.id})}" class="btn btn-danger">
-                Excluir
+            <a th:href="@{/categorias/delete/{id}(id=${c.id})}" class="btn btn-lightn">
+                <i class="bi bi-trash text-danger"></i>
             </a>
         </div>
     </div>
+    <div class="d-none d-lg-flex mt-2">
+        <p class="offset-1 col-lg-2 mb-0">Imagem</p>
+        <p class="col-lg-2 mb-0">Nome</p>
+        <p class="col-lg-2 mb-0">Preço</p>
+        <p class="col-lg-2 mb-0">Estoque</p>
+        <p class="col-lg-2 mb-0">Deletar</p>
+    </div>
     <hr>
     <table class="table">
-        <tr th:each="p:${c.produtos}">
-            <td>
-                <div th:if="${!#lists.isEmpty(p.imagens)}">
-
-                    <img th:src="@{'/uploads/' + ${p.imagens[0].nomeArquivo}}"
-                         width="100"
-                         height="100"
-                         style="object-fit:cover"
-                         class="rounded">
-
+        <tbody class="d-grid d-sm-flex flex-wrap d-lg-grid">
+        <tr th:each="p:${c.produtos}" class="d-grid d-lg-flex border-bottom px-2 px-lg-0 rounded rounded-3 col-12 col-sm-6 col-lg-12 mb-3">
+            <td class="border-bottom-0 offset-lg-1 col-lg-2 bg-sm-light td-top">
+                <div th:if="${!#lists.isEmpty(p.imagens)}" style="width: 80px; height: 80px;">
+                    <img th:src="@{'/uploads/' + ${p.imagens[0].nomeArquivo}}" width="100" height="100" style="object-fit:cover" class="rounded rounded-3 img-fluid">
                 </div>
             </td>
-            <td th:text="${p.nome}">
+            <td th:text="${p.nome}" class="d-flex align-items-center border-bottom-0 col-lg-2 bg-sm-light nome-prod">
             </td>
-            <td th:text="${p.preco}">
+            <td th:text="${p.preco}" class="d-flex align-items-center border-bottom-0 col-lg-2 bg-sm-light preco-prod">
             </td>
-            <td th:text="${p.estoque}">
+            <td th:text="${p.estoque}" class="d-flex align-items-center border-bottom-0 col-lg-2 bg-sm-light estoque-prod">
             </td>
-            <td>
-                <a th:href="@{/produtos/removerCategoria(produtoId=${p.id}, categoriaId=${c.id})}" class="btn btn-danger btn-sm">
-                    Remover
+            <td class="d-flex align-items-center border-bottom-0 col-lg-2 bg-sm-light td-bottom">
+                <a th:href="@{/produtos/removerCategoria(produtoId=${p.id}, categoriaId=${c.id})}" class="btn btn-lightn btn-sm d-flex align-items-center border-bottom-0">
+                   <span class="me-2"><i class="bi bi-x-lg fw-semibold"></i></span> Remover
                 </a>
             </td>
         </tr>
+        </tbody>
     </table>
 </div>
-    <div class="card mb-5 p-4">
+    <div class="card mb-5 p-2 p-sm-4">
         <div class="d-flex justify-content-between">
             <div>
                 <h5>Sem Categoria</h5>
@@ -81,15 +90,29 @@
             </div>
         </div>
         <hr>
+        <div class="d-none d-lg-flex mt-2">
+            <p class="offset-1 col-lg-2 mb-0">Imagem</p>
+            <p class="col-lg-2 mb-0">Nome</p>
+            <p class="col-lg-2 mb-0">Preço</p>
+            <p class="col-lg-2 mb-0">Estoque</p>
+        </div>
         <table class="table">
-            <tr th:each="p : ${produtosSemCategoria}">
-                <td th:text="${p.nome}"></td>
-                <td th:text="${p.preco}"></td>
-                <td th:text="${p.estoque}"></td>
+            <tbody class="d-grid d-sm-flex flex-wrap d-lg-grid">
+            <tr th:each="p : ${produtosSemCategoria}" class="d-grid d-lg-flex border-bottom px-2 px-lg-0 rounded rounded-3 col-12 col-sm-6 col-lg-12 mb-3">
+                <td class="border-bottom-0 offset-lg-1 col-lg-2 bg-sm-light td-top">
+                    <div th:if="${!#lists.isEmpty(p.imagens)}" style="width: 80px; height: 80px;">
+                        <img th:src="@{'/uploads/' + ${p.imagens[0].nomeArquivo}}" width="100" height="100" style="object-fit:cover" class="rounded rounded-4 img-fluid">
+                    </div>
+                </td>
+                <td th:text="${p.nome}" class="d-flex align-items-center border-bottom-0 col-lg-2 bg-sm-light nome-prod"></td>
+                <td th:text="${p.preco}" class="d-flex align-items-center border-bottom-0 col-lg-2 bg-sm-light preco-prod"></td>
+                <td th:text="${p.estoque}" class="d-flex align-items-center border-bottom-0 col-lg-2 bg-sm-light td-bottom estoque-prod"></td>
             </tr>
+            </tbody>
         </table>
     </div>
 </div>
+
 <div class="modal fade" id="categoriaModal">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -115,6 +138,7 @@
         </div>
     </div>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     document.querySelectorAll('.btn-editar')

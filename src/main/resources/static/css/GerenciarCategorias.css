@@ -1,0 +1,28 @@
+@media screen and (max-width: 991px){
+    .nome-prod{
+        font-weight: 600 !important;
+        font-size: 24px !important;
+    }
+
+    .preco-prod::before{
+        content: "Preço: R$ ";
+        font-weight: 600;
+        margin-right: 4px;
+    }
+
+    .estoque-prod::before{
+        content: "Quantidade: ";
+        font-weight: 600;
+        margin-right: 4px;
+    }
+
+    .td-top{
+        border-top-left-radius: 0.375rem !important;
+        border-top-right-radius: 0.375rem !important;
+    }
+
+    .td-bottom{
+        border-bottom-left-radius: 0.375rem !important;
+        border-bottom-right-radius: 0.375rem !important;
+    }
+}
