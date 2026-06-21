@@ -61,7 +61,7 @@
         <tr th:each="p:${c.produtos}" class="d-grid d-lg-flex border-bottom px-2 px-lg-0 rounded rounded-3 col-12 col-sm-6 col-lg-12 mb-3">
             <td class="border-bottom-0 offset-lg-1 col-lg-2 bg-sm-light td-top">
                 <div th:if="${!#lists.isEmpty(p.imagens)}" style="width: 80px; height: 80px;">
-                    <img th:src="@{'/uploads/' + ${p.imagens[0].nomeArquivo}}" width="100" height="100" style="object-fit:cover" class="rounded rounded-3 img-fluid">
+                    <img th:src="@{'/uploads/' + ${p.imagens[0].nomeArquivo}}" width="100" height="100" style="object-fit:cover; min-height: 80px; min-width: 80px;" class="rounded rounded-3 img-fluid">
                 </div>
             </td>
             <td th:text="${p.nome}" class="d-flex align-items-center border-bottom-0 col-lg-2 bg-sm-light nome-prod">
@@ -101,7 +101,7 @@
             <tr th:each="p : ${produtosSemCategoria}" class="d-grid d-lg-flex border-bottom px-2 px-lg-0 rounded rounded-3 col-12 col-sm-6 col-lg-12 mb-3">
                 <td class="border-bottom-0 offset-lg-1 col-lg-2 bg-sm-light td-top">
                     <div th:if="${!#lists.isEmpty(p.imagens)}" style="width: 80px; height: 80px;">
-                        <img th:src="@{'/uploads/' + ${p.imagens[0].nomeArquivo}}" width="100" height="100" style="object-fit:cover" class="rounded rounded-4 img-fluid">
+                        <img th:src="@{'/uploads/' + ${p.imagens[0].nomeArquivo}}" width="100" height="100" style="object-fit:cover; min-height: 80px; min-width: 80px;" class="rounded rounded-4">
                     </div>
                 </td>
                 <td th:text="${p.nome}" class="d-flex align-items-center border-bottom-0 col-lg-2 bg-sm-light nome-prod"></td>

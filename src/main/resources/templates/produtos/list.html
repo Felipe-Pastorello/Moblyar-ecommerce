@@ -16,6 +16,9 @@
             <i class="bi bi-plus-circle me-2"></i>Novo Produto
         </button>
     </div>
+    <div class="mb-4">
+        <a th:href="@{/categorias}" class="btn btn-light border border-2">Editar Categorias</a>
+    </div>
     <div class="d-grid bg-white rounded rounded-4 p-4">
         <small class="mb-4 fw-semibold">
             Produtos
@@ -43,8 +46,7 @@
                             <button class="btn btn-light btn-editar" data-bs-toggle="modal" data-bs-target="#productModal" th:attr="data-id=${p.id}, data-name=${p.nome}, data-description=${p.descricao}, data-price=${p.preco}, data-stock=${p.estoque}">
                                 <i class="bi bi-pen"></i>
                             </button>
-                            <a th:href="@{/produtos/delete/{id}(id=${p.id})}"
-                               class="btn btn-light">
+                            <a th:href="@{/produtos/delete/{id}(id=${p.id})}" class="btn btn-light btn-excluir">
                                 <i class="bi bi-trash text-red"></i>
                             </a>
                             <a th:href="@{/produtos/status/{id}(id=${p.id})}"
@@ -118,6 +120,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.querySelectorAll('.btn-editar').forEach(btn => {
 
@@ -177,7 +180,16 @@
 
     async function excluirImagem(id){
 
-        if(!confirm("Deseja excluir esta imagem?")){
+        const result = await Swal.fire({
+            title: "Excluir imagem?",
+            text: "Essa ação não poderá ser desfeita.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Excluir",
+            cancelButtonText: "Cancelar"
+        });
+
+        if(!result.isConfirmed){
             return;
         }
 
@@ -195,16 +207,31 @@
                     )
                     ?.remove();
 
+                Swal.fire({
+                    title: "Imagem excluída!",
+                    icon: "success",
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+
             } else {
 
-                alert("Erro ao excluir imagem.");
+                Swal.fire(
+                    "Erro",
+                    "Não foi possível excluir a imagem.",
+                    "error"
+                );
             }
 
         } catch(e){
 
             console.error(e);
 
-            alert("Erro ao excluir imagem.");
+            Swal.fire(
+                "Erro",
+                "Não foi possível excluir a imagem.",
+                "error"
+            );
         }
     }
 
@@ -315,8 +342,7 @@
         }
     });
 
-    document.getElementById("formProduto")
-        .addEventListener("submit", function(e){
+    document.getElementById("formProduto").addEventListener("submit", function(e){
 
             if(!validarFormulario() || !nomeValido){
                 e.preventDefault();
@@ -324,7 +350,52 @@
 
         });
 
+    document.querySelectorAll(".btn-excluir")
+        .forEach(btn => {
 
+            btn.addEventListener("click", function(e){
+
+                e.preventDefault();
+
+                const url = this.href;
+
+                Swal.fire({
+                    title: "Tem certeza?",
+                    text: "O produto será excluído permanentemente.",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Sim, excluir",
+                    cancelButtonText: "Cancelar"
+                }).then((result) => {
+
+                    if(result.isConfirmed){
+                        window.location.href = url;
+                    }
+                });
+            });
+        });
+
+    const params = new URLSearchParams(window.location.search);
+
+    if(params.get("sucesso") === "cadastrado"){
+
+        Swal.fire({
+            title: "Produto cadastrado!",
+            text: "O produto foi criado com sucesso.",
+            icon: "success"
+        });
+
+    }
+
+    if(params.get("sucesso") === "editado"){
+
+        Swal.fire({
+            title: "Produto atualizado!",
+            text: "As alterações foram salvas.",
+            icon: "success"
+        });
+
+    }
 </script>
 </body>
 </html>

@@ -69,6 +69,9 @@ public class ProdutoController {
 
             throws Exception {
 
+        boolean novoProduto =
+                produto.getId() == null;
+
         // Se estiver editando, recupera o produto atual
         if(produto.getId() != null){
 
@@ -136,7 +139,11 @@ public class ProdutoController {
 
         service.save(produto);
 
-        return "redirect:/produtos";
+        if(novoProduto){
+            return "redirect:/produtos?sucesso=cadastrado";
+        }
+
+        return "redirect:/produtos?sucesso=editado";
     }
 
     @GetMapping("/status/{id}")
