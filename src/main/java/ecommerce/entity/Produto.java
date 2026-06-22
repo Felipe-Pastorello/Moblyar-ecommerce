@@ -26,20 +26,13 @@ public class Produto {
 
     private String status = "ATIVO";
 
-    @OneToMany(mappedBy = "produto",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true)
+    @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true)
 
     @JsonIgnore
-    private List<ImagemProduto> imagens =
-            new ArrayList<>();
+    private List<ImagemProduto> imagens = new ArrayList<>();
 
     @ManyToMany
-    @JoinTable(
-            name = "produto_categoria",
-            joinColumns = @JoinColumn(name = "produto_id"),
-            inverseJoinColumns = @JoinColumn(name = "categoria_id")
-    )
+    @JoinTable(name = "produto_categoria", joinColumns = @JoinColumn(name = "produto_id"), inverseJoinColumns = @JoinColumn(name = "categoria_id"))
     private List<Categorias> categorias;
 
     public void adicionarImagem(ImagemProduto img){

@@ -1,8 +1,10 @@
 package ecommerce.service;
 
 import ecommerce.entity.Categorias;
+import ecommerce.entity.Produto;
 import ecommerce.repository.CategoriaRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -31,9 +33,16 @@ public class CategoriaService {
                 .orElseThrow();
     }
 
+    @Transactional
     public void delete(Long id){
+        Categorias categoria = getById(id);
 
-        repository.deleteById(id);
+        for(Produto produto : categoria.getProdutos()){
+
+            produto.getCategorias().remove(categoria);
+        }
+
+        repository.delete(categoria);
     }
 
     public void alterarStatus(Long id){
@@ -52,18 +61,12 @@ public class CategoriaService {
         return repository.findAllById(ids);
     }
 
-    public boolean existeNome(
-            String nome,
-            Long id){
+    public boolean existeNome(String nome, Long id){
 
         if(id == null){
             return repository.existsByNome(nome);
         }
 
-        return repository
-                .existsByNomeAndIdNot(
-                        nome,
-                        id
-                );
+        return repository.existsByNomeAndIdNot(nome, id);
     }
     }

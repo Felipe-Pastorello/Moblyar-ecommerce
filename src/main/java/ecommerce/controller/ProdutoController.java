@@ -57,82 +57,51 @@ public class ProdutoController {
     public String saveProduto(
             Produto produto,
 
-            @RequestParam(
-                    value="categoriaIds",
-                    required=false)
+            @RequestParam(value="categoriaIds", required=false)
             List<Long> categoriaIds,
 
-            @RequestParam(
-                    value="arquivos",
-                    required=false)
+            @RequestParam(value="arquivos", required=false)
             MultipartFile[] arquivos)
 
             throws Exception {
 
-        boolean novoProduto =
-                produto.getId() == null;
+        boolean novoProduto = produto.getId() == null;
 
-        // Se estiver editando, recupera o produto atual
+
         if(produto.getId() != null){
-
-            Produto existente =
-                    service.getById(
-                            produto.getId()
-                    );
-
-            produto.setImagens(
-                    existente.getImagens()
-            );
+            Produto existente = service.getById(produto.getId());
+            produto.setImagens(existente.getImagens());
         }
 
         // Categorias
         if(categoriaIds != null){
 
-            produto.setCategorias(
-                    categoriaService
-                            .buscarPorIds(categoriaIds)
-            );
+            produto.setCategorias(categoriaService.buscarPorIds(categoriaIds));
 
         }else{
 
-            produto.setCategorias(
-                    List.of()
-            );
+            produto.setCategorias(List.of());
         }
 
         // Novas imagens
         if (arquivos != null) {
 
-            String pastaUploads =
-                    "C:/uploads/";
+            String pastaUploads = "C:/uploads/";
 
-            for (MultipartFile arquivo
-                    : arquivos) {
+            for (MultipartFile arquivo : arquivos) {
 
                 if (!arquivo.isEmpty()) {
 
-                    String nomeArquivo =
-                            UUID.randomUUID()
-                                    + "_"
-                                    + arquivo.getOriginalFilename();
+                    String nomeArquivo = UUID.randomUUID() + "_" + arquivo.getOriginalFilename();
 
                     arquivo.transferTo(
-                            new File(
-                                    pastaUploads
-                                            + nomeArquivo
-                            )
-                    );
+                            new File(pastaUploads + nomeArquivo));
 
-                    ImagemProduto img =
-                            new ImagemProduto();
+                    ImagemProduto img = new ImagemProduto();
 
-                    img.setNomeArquivo(
-                            nomeArquivo
-                    );
+                    img.setNomeArquivo(nomeArquivo);
 
-                    produto.adicionarImagem(
-                            img
-                    );
+                    produto.adicionarImagem(img);
                 }
             }
         }

@@ -40,14 +40,19 @@ public class CategoriaController {
     @PostMapping("/save")
     public String salvar(Categorias categoria){
 
+        boolean novaCategoria = categoria.getId() == null;
+
         service.save(categoria);
 
-        return "redirect:/categorias";
+        if(novaCategoria){
+            return "redirect:/categorias?sucesso=cadastrada";
+        }
+
+        return "redirect:/categorias?sucesso=editada";
     }
 
     @GetMapping("/status/{id}")
-    public String alterarStatus(
-            @PathVariable Long id){
+    public String alterarStatus(@PathVariable Long id){
 
         service.alterarStatus(id);
 
@@ -55,8 +60,7 @@ public class CategoriaController {
     }
 
     @GetMapping("/delete/{id}")
-    public String delete(
-            @PathVariable Long id){
+    public String delete(@PathVariable Long id){
 
         service.delete(id);
 
@@ -65,13 +69,8 @@ public class CategoriaController {
 
     @GetMapping("/existe")
     @ResponseBody
-    public boolean existeNome(
-            String nome,
-            Long id){
+    public boolean existeNome(String nome, Long id){
 
-        return service.existeNome(
-                nome,
-                id
-        );
+        return service.existeNome(nome, id);
     }
 }

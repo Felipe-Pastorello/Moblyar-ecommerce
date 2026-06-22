@@ -17,11 +17,7 @@ public class SecurityConfig {
     public UserDetailsService users() {
 
         UserDetails admin =
-                User.withDefaultPasswordEncoder()
-                        .username("admin")
-                        .password("1234")
-                        .roles("ADMIN")
-                        .build();
+                User.withDefaultPasswordEncoder().username("admin").password("1234").roles("ADMIN").build();
 
         return new InMemoryUserDetailsManager(admin);
     }
@@ -35,15 +31,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
 
                         .requestMatchers(
-                                "/",
-                                "/css/**",
-                                "/uploads/**"
-                        ).permitAll()
+                                "/", "/css/**", "/uploads/**").permitAll()
 
-                        .requestMatchers(
-                                "/produtos/**",
-                                "/categorias/**"
-                        ).authenticated()
+                        .requestMatchers("/produtos/**", "/categorias/**").authenticated()
 
                         .anyRequest().permitAll()
                 )

@@ -44,9 +44,7 @@ public class ProdutoService {
 
     public void toggleStatus(Long id){
 
-        Produto produto =
-                repository.findById(id)
-                        .orElseThrow();
+        Produto produto = repository.findById(id).orElseThrow();
 
         if(produto.getStatus().equals("ATIVO")){
             produto.setStatus("INATIVO");
