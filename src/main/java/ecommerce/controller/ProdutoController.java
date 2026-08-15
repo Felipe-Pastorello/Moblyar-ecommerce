@@ -32,14 +32,15 @@ public class ProdutoController {
     }
 
     @GetMapping
-    public String listProdutos(Model model){
-        model.addAttribute("produtos", service.listAll());
+    public String listProdutos(
+            @RequestParam(defaultValue = "0") int pagina,
+            Model model) {
 
+        var paginaProdutos = service.listAll(pagina);
 
-        model.addAttribute(
-                "categorias",
-                categoriaService.listAll()
-        );
+        model.addAttribute("paginaProdutos", paginaProdutos);
+        model.addAttribute("produtos", paginaProdutos.getContent());
+        model.addAttribute("categorias", categoriaService.listAll());
 
         return "produtos/list";
     }

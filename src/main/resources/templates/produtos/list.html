@@ -60,6 +60,25 @@
             </div>
         </div>
     </div>
+    <nav class="mt-4" th:if="${paginaProdutos.totalPages > 1}">
+        <ul class="pagination justify-content-center">
+
+            <li class="page-item" th:classappend="${paginaProdutos.first} ? 'disabled'">
+                <a class="page-link" th:href="@{/produtos(pagina=${paginaProdutos.number - 1})}">
+                    <i class="bi bi-chevron-left"></i>
+                </a>
+            </li>
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, paginaProdutos.totalPages - 1)}" th:classappend="${i == paginaProdutos.number} ? 'active'">
+                <a class="page-link" th:text="${i + 1}" th:href="@{/produtos(pagina=${i})}">
+                </a>
+            </li>
+            <li class="page-item" th:classappend="${paginaProdutos.last} ? 'disabled'">
+                <a class="page-link" th:href="@{/produtos(pagina=${paginaProdutos.number + 1})}">
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
     <div class="modal fade" id="productModal" >
         <div class="modal-dialog">
             <div class="modal-content">

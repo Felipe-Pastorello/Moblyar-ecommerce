@@ -3,6 +3,9 @@ import ecommerce.entity.Produto;
 import ecommerce.repository.ProdutoRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @Service
 public class ProdutoService {
@@ -12,8 +15,11 @@ public class ProdutoService {
         this.repository = repository;
     }
 
-    public List<Produto> listAll(){
-        return repository.findAll();
+    public Page<Produto> listAll(int pagina) {
+
+        Pageable pageable = PageRequest.of(pagina, 9);
+
+        return repository.findAll(pageable);
     }
 
     public Produto save(Produto produto){

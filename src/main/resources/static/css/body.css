@@ -47,3 +47,14 @@
 .btn-lightn:hover{
     background-color: #f5f4f6 !important;
 }
+
+.active>.page-link, .page-link.active{
+    z-index: 3;
+    color: white;
+    background-color: var(--bs-brand);
+    border-color: var(--bs-brand);
+}
+
+.page-link {
+    color: var(--bs-brand);
+}
