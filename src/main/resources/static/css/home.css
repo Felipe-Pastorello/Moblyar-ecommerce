@@ -1,0 +1,374 @@
+:root {
+    --red: #e60000;
+    --background: #f4f3f7;
+    --text: #111111;
+    --muted: #888894;
+}
+
+
+/* =========================================================
+   GERAL
+========================================================= */
+
+body {
+    margin: 0;
+    background-color: var(--background);
+    color: var(--text);
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.text-red {
+    color: var(--red) !important;
+}
+
+.btn-red {
+    background-color: var(--red);
+    border-color: var(--red);
+    color: white;
+}
+
+.btn-red:hover {
+    background-color: #c90000;
+    border-color: #c90000;
+    color: white;
+}
+
+
+/* =========================================================
+   NAVBAR
+========================================================= */
+
+.navbar {
+    min-height: 64px;
+}
+
+.navbar-brand {
+    font-size: 24px;
+}
+
+.nav-link {
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.hero {
+    min-height: 300px;
+
+    background-image:
+            url("/images/banner-home.jpg");
+
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+
+    position: relative;
+}
+
+.hero-overlay {
+    min-height: 300px;
+
+    background:
+            linear-gradient(
+                    90deg,
+                    rgba(0, 0, 0, 0.70),
+                    rgba(0, 0, 0, 0.20),
+                    rgba(0, 0, 0, 0)
+            );
+
+    display: flex;
+    align-items: center;
+}
+
+.hero-content {
+    color: white;
+    max-width: 600px;
+}
+
+.hero-content h1 {
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.hero-content p {
+    margin-bottom: 22px;
+    font-size: 16px;
+}
+
+
+/* =========================================================
+   SEÇÕES
+========================================================= */
+
+.section-home {
+    padding: 55px 0;
+}
+
+.section-title {
+    margin-bottom: 22px;
+}
+
+.section-title h2,
+.section-home h2 {
+    font-size: 24px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   PRODUTOS
+========================================================= */
+
+.product-card {
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+
+    border: 1px solid #e5e5e5;
+
+    transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-3px);
+
+    box-shadow:
+            0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.product-image {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+
+    overflow: hidden;
+
+    background-color: #e9e9e9;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    display: block;
+}
+
+.no-image {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #999;
+    font-size: 35px;
+}
+
+.product-content {
+    padding: 16px;
+}
+
+.product-content h5 {
+    font-size: 15px;
+    font-weight: 700;
+
+    min-height: 20px;
+
+    margin-bottom: 10px;
+}
+
+.product-price {
+    display: block;
+
+    color: var(--red);
+
+    font-size: 17px;
+}
+
+
+/* =========================================================
+   CATEGORIAS
+========================================================= */
+
+.categories-section {
+    padding-top: 25px;
+}
+
+.category-card {
+    background-color: white;
+
+    min-height: 55px;
+
+    border-radius: 9px;
+    border: 1px solid #e5e5e5;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 12px;
+
+    color: #111;
+    text-decoration: none;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    transition:
+            background-color 0.2s ease,
+            color 0.2s ease,
+            transform 0.2s ease;
+}
+
+.category-card:hover {
+    background-color: var(--red);
+    color: white;
+
+    transform: translateY(-2px);
+}
+
+
+/* =========================================================
+   BENEFÍCIOS
+========================================================= */
+
+.benefits-section {
+    padding-top: 50px;
+    padding-bottom: 60px;
+}
+
+.benefit-icon {
+    width: 42px;
+    height: 42px;
+
+    border-radius: 50%;
+
+    background-color: #f5dada;
+
+    margin: 0 auto 15px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #111;
+}
+
+.benefits-section h5 {
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.benefits-section p {
+    max-width: 240px;
+
+    margin: 0 auto;
+
+    color: var(--muted);
+
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.footer {
+    background-color: white;
+
+    padding: 45px 0 20px;
+}
+
+.footer h5 {
+    font-size: 15px;
+}
+
+.footer h6 {
+    font-size: 14px;
+    font-weight: 700;
+
+    margin-bottom: 15px;
+}
+
+.footer p,
+.footer a {
+    color: #8a8a94;
+
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+.footer a {
+    display: block;
+
+    text-decoration: none;
+}
+
+.footer a:hover {
+    color: var(--red);
+}
+
+.footer hr {
+    border-color: #e5e5e5;
+
+    margin-top: 35px;
+}
+
+.copyright {
+    color: #999;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 767.98px) {
+
+    .hero,
+    .hero-overlay {
+        min-height: 330px;
+    }
+
+    .hero-content {
+        padding: 30px 10px;
+    }
+
+    .hero-content h1 {
+        font-size: 34px;
+    }
+
+    .hero-content p {
+        font-size: 14px;
+    }
+
+    .section-home {
+        padding: 40px 0;
+    }
+
+    .section-title h2,
+    .section-home h2 {
+        font-size: 21px;
+    }
+
+    .product-content {
+        padding: 14px;
+    }
+
+    .product-content h5 {
+        font-size: 14px;
+    }
+
+}

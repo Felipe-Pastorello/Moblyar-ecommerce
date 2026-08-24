@@ -1,6 +1,7 @@
 package ecommerce.service;
 import ecommerce.entity.Produto;
 import ecommerce.repository.ProdutoRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import org.springframework.data.domain.Page;
@@ -68,5 +69,47 @@ public class ProdutoService {
 
     public boolean existeNome(String nome){
         return repository.existsByNome(nome);
+    }
+
+    public List<Produto> listarProdutosHome() {
+
+        List<Produto> produtos = repository.findAll();
+
+        return produtos.stream()
+                .filter(p -> "ATIVO".equals(p.getStatus()))
+                .limit(4)
+                .toList();
+    }
+
+    public Page<Produto> buscarProdutos(String termo, Long categoriaId, Double precoMin, Double precoMax, Boolean disponivel, int pagina, String ordenar) {
+
+        Sort sort = switch (ordenar) {
+            case "precoMenor" ->
+                    Sort.by("preco").ascending();
+
+            case "precoMaior" ->
+                    Sort.by("preco").descending();
+
+            case "nome" ->
+                    Sort.by("nome").ascending();
+
+            default ->
+                    Sort.by("id").descending();
+        };
+
+        Pageable pageable = PageRequest.of(
+                pagina,
+                9,
+                sort
+        );
+
+        return repository.buscarProdutos(
+                termo,
+                categoriaId,
+                precoMin,
+                precoMax,
+                disponivel,
+                pageable
+        );
     }
 }

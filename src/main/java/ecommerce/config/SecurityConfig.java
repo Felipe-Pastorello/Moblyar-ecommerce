@@ -31,7 +31,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
 
                         .requestMatchers(
-                                "/", "/css/**", "/uploads/**").permitAll()
+                                "/", "/css/**", "/uploads/**", "/buscar/**").permitAll()
 
                         .requestMatchers("/produtos/**", "/categorias/**").authenticated()
 

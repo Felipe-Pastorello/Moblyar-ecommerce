@@ -69,4 +69,12 @@ public class CategoriaService {
 
         return repository.existsByNomeAndIdNot(nome, id);
     }
+
+    public List<Categorias> listarAtivas() {
+
+        return repository.findAll()
+                .stream()
+                .filter(c -> "ATIVO".equals(c.getStatus()))
+                .toList();
+    }
     }
