@@ -205,4 +205,19 @@ public class ProdutoController {
 
         return "produtos/busca";
     }
+
+    @GetMapping("/{id}")
+    public String visualizarProduto(@PathVariable Long id, Model model) {
+
+        Produto produto = service.getById(id);
+
+        if (produto == null) {
+            return "redirect:/";
+        }
+
+        model.addAttribute("produto", produto);
+
+        return "produtos/produto";
+    }
+
 }

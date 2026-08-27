@@ -112,4 +112,21 @@ public class ProdutoService {
                 pageable
         );
     }
+
+    public List<Produto> buscarRelacionados(Produto produto) {
+
+        if (produto.getCategorias() == null ||
+                produto.getCategorias().isEmpty()) {
+
+            return List.of();
+        }
+
+        Long categoriaId = produto.getCategorias()
+                .iterator()
+                .next()
+                .getId();
+
+        return repository
+                .findRelacionados(categoriaId, produto.getId());
+    }
 }

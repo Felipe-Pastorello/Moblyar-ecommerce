@@ -1,0 +1,264 @@
+.produto-page {
+    background-color: #f5f4f8;
+    min-height: 100vh;
+}
+
+
+/* ==========================================
+   IMAGEM PRINCIPAL
+========================================== */
+
+.produto-imagem-container {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: 8px;
+    background-color: #e9e9e9;
+}
+
+.produto-imagem {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.produto-sem-imagem {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+    align-items: center;
+
+    color: #999;
+}
+
+.produto-sem-imagem i {
+    font-size: 48px;
+}
+
+
+/* ==========================================
+   MINIATURAS
+========================================== */
+
+.produto-miniaturas {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+}
+
+.produto-miniatura {
+    width: 80px;
+    height: 80px;
+
+    flex-shrink: 0;
+
+    border-radius: 6px;
+    overflow: hidden;
+
+    border: 1px solid #ddd;
+
+    cursor: pointer;
+}
+
+.produto-miniatura img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+
+/* ==========================================
+   INFORMAÇÕES
+========================================== */
+
+.produto-informacoes {
+    padding-top: 5px;
+}
+
+.produto-titulo {
+    font-size: clamp(28px, 3vw, 42px);
+    font-weight: 700;
+
+    margin-bottom: 10px;
+}
+
+.produto-preco {
+    color: #e00000;
+
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.produto-descricao {
+    color: #777;
+    line-height: 1.6;
+}
+
+.produto-categorias {
+    font-size: 14px;
+}
+
+
+/* ==========================================
+   QUANTIDADE
+========================================== */
+
+.quantidade-container {
+    display: inline-flex;
+
+    align-items: center;
+
+    border: 1px solid #ddd;
+    border-radius: 6px;
+
+    overflow: hidden;
+}
+
+.quantidade-container button {
+    border: 0;
+    border-radius: 0;
+
+    width: 40px;
+    height: 40px;
+}
+
+.quantidade {
+    width: 45px;
+
+    text-align: center;
+
+    font-weight: 500;
+}
+
+
+/* ==========================================
+   BOTÕES
+========================================== */
+
+.btn-red {
+    background-color: #e00000;
+    color: white;
+
+    border: none;
+}
+
+.btn-red:hover {
+    background-color: #c90000;
+    color: white;
+}
+
+
+/* ==========================================
+   BENEFÍCIOS
+========================================== */
+
+.lista-beneficios {
+    list-style: none;
+
+    padding: 0;
+    margin: 0;
+
+    color: #777;
+}
+
+.lista-beneficios li {
+    margin-bottom: 10px;
+}
+
+.lista-beneficios i {
+    margin-right: 6px;
+}
+
+
+/* ==========================================
+   PRODUTOS RELACIONADOS
+========================================== */
+
+.section-title {
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.produto-card {
+    overflow: hidden;
+
+    border-radius: 8px;
+
+    background-color: white;
+
+    transition: transform .2s ease,
+    box-shadow .2s ease;
+}
+
+.produto-card:hover {
+    transform: translateY(-3px);
+
+    box-shadow: 0 5px 20px rgba(0,0,0,.08);
+}
+
+.produto-card-imagem {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+
+    overflow: hidden;
+}
+
+.produto-card-imagem img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+.produto-card .card-body {
+    padding: 15px;
+}
+
+.produto-card .card-title {
+    color: #111;
+
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.produto-card-preco {
+    color: #e00000;
+
+    font-weight: 700;
+
+    margin-bottom: 0;
+}
+
+
+/* ==========================================
+   RESPONSIVO
+========================================== */
+
+@media (max-width: 991px) {
+
+    .produto-imagem-container {
+        aspect-ratio: 4 / 3;
+    }
+
+}
+
+@media (max-width: 575px) {
+
+    .produto-page .container {
+        padding-top: 25px !important;
+    }
+
+    .produto-titulo {
+        font-size: 28px;
+    }
+
+    .produto-preco {
+        font-size: 22px;
+    }
+
+}

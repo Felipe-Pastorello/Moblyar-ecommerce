@@ -54,8 +54,15 @@ WHERE p.categorias IS EMPTY""")
             @Param("disponivel") Boolean disponivel,
             Pageable pageable
     );
-    Page<Produto> findByNomeContainingIgnoreCase(
-            String nome,
-            Pageable pageable
+    @Query("""
+    SELECT DISTINCT p
+    FROM Produto p
+    JOIN p.categorias c
+    WHERE c.id = :categoriaId
+      AND p.id <> :produtoId
+""")
+    List<Produto> findRelacionados(
+            @Param("categoriaId") Long categoriaId,
+            @Param("produtoId") Long produtoId
     );
 }
