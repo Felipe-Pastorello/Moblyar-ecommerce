@@ -44,6 +44,13 @@
             top: 20px;
         }
 
+        .no-image {
+            aspect-ratio: 1/1;
+            width: 100%;
+            object-fit: cover;
+
+        }
+
         @media (max-width: 991px) {
 
             .filtro-card {
@@ -178,38 +185,58 @@
                 </a>
             </div>
             <div th:unless="${produtos.empty}" class="row g-4">
-                <div class="col-12 col-sm-6 col-xl-4" th:each="produto : ${produtos}">
-                    <div class="card border-0 rounded-4 overflow-hidden h-100 produto-card">
-                        <div th:if="${!#lists.isEmpty(produto.imagens)}">
-                            <img th:src="@{'/uploads/' + ${produto.imagens[0].nomeArquivo}}" th:alt="${produto.nome}" class="produto-imagem">
-                        </div>
-                        <div th:unless="${!#lists.isEmpty(produto.imagens)}" class="produto-imagem bg-secondary-subtle d-flex align-items-center justify-content-center">
-                            <i class="bi bi-image fs-1 text-muted"></i>
-                        </div>
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title fw-semibold" th:text="${produto.nome}">
-                                Produto
-                            </h5>
-                            <p class="text-muted small mb-2" th:text="${produto.descricao}">
-                                Descrição do produto
-                            </p>
-                            <div class="mt-auto">
-                                <p class="fs-5 fw-bold text-red mb-3">
+                <div class="col-12 col-sm-6 col-lg-4" th:each="produto : ${produtos.content}">
+
+                    <div class="card h-100">
+                        <!-- Área clicável do produto -->
+                        <a th:href="@{/produto/{id}(id=${produto.id})}"
+                           class="text-decoration-none text-dark">
+
+                            <img th:if="${!#lists.isEmpty(produto.imagens)}"
+                                 th:src="@{'/uploads/' + ${produto.imagens[0].nomeArquivo}}"
+                                 th:alt="${produto.nome}" class="no-image">
+
+                            <div class="card-body">
+
+                                <h5 class="card-title fw-semibold"
+                                    th:text="${produto.nome}">
+                                    Produto
+                                </h5>
+
+                                <p class="fs-5 fw-bold text-red mb-0">
                                     R$
                                     <span th:text="${#numbers.formatDecimal(produto.preco, 1, 2)}">
-                                        0,00
-                                    </span>
+                        0,00
+                    </span>
                                 </p>
-                                <form th:action="@{/carrinho/adicionar}" method="post">
-                                    <input type="hidden" name="produtoId" th:value="${produto.id}">
-                                    <button type="submit" class="btn btn-red w-100">
-                                        <i class="bi bi-cart-plus me-2"></i>
-                                        Adicionar ao carrinho
-                                    </button>
-                                </form>
+
                             </div>
+
+                        </a>
+
+                        <!-- Botão fica FORA do <a> -->
+                        <div class="card-body pt-0">
+
+                            <form th:action="@{/carrinho/adicionar}" method="post">
+
+                                <input type="hidden"
+                                       name="produtoId"
+                                       th:value="${produto.id}">
+
+                                <button type="submit"
+                                        class="btn btn-red w-100">
+
+                                    <i class="bi bi-cart-plus me-2"></i>
+                                    Adicionar ao carrinho
+
+                                </button>
+
+                            </form>
+
                         </div>
+
                     </div>
+
                 </div>
             </div>
             <nav th:if="${produtos.totalPages > 1}" class="mt-5" aria-label="Navegação dos produtos">

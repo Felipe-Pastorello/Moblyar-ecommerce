@@ -10,6 +10,10 @@
     color: var(--bs-brand) !important;
 }
 
+.text-gray{
+    color: #717182;
+}
+
 .border-red {
     border-color: var(--bs-brand) !important;
 }

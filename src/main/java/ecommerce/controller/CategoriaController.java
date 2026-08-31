@@ -34,7 +34,7 @@ public class CategoriaController {
                 produtoService.buscarSemCategoria()
         );
 
-        return "categorias/list";
+        return "admin/categorias/list";
     }
 
     @PostMapping("/save")
