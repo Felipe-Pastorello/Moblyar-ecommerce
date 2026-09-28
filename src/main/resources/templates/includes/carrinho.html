@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-br"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="carrinho" class="offcanvas offcanvas-end"
+
+     tabindex="-1"
+     id="carrinhoOffcanvas"
+     aria-labelledby="carrinhoOffcanvasLabel">
+
+    <div class="offcanvas-header border-bottom">
+
+        <h5 class="offcanvas-title fw-bold" id="carrinhoOffcanvasLabel">
+            Meu carrinho
+        </h5>
+
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="offcanvas"
+                aria-label="Fechar">
+        </button>
+
+    </div>
+
+    <div class="offcanvas-body d-flex flex-column p-0">
+
+        <div id="carrinhoOffcanvasBody" class="flex-grow-1 p-3">
+
+            <div class="text-center py-5">
+                <div class="spinner-border" role="status"></div>
+            </div>
+
+        </div>
+
+        <div id="carrinhoOffcanvasFooter" class="border-top p-3">
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>
