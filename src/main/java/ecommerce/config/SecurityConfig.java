@@ -59,6 +59,7 @@ public class SecurityConfig {
                                 "/carrinho/**",
                                 "/comprar/**",
                                 "/pedido/**",
+                                "/checkout/**",
                                 "/perfil"
                         ).authenticated()
 
