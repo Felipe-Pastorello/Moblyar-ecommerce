@@ -9,11 +9,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const body = document.getElementById("carrinhoOffcanvasBody");
     const footer = document.getElementById("carrinhoOffcanvasFooter");
 
-    const csrfToken =
-        document.querySelector('meta[name="_csrf"]')?.content;
+    const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
 
-    const csrfHeader =
-        document.querySelector('meta[name="_csrf_header"]')?.content;
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
 
 
     function headersComCsrf() {
@@ -27,25 +25,14 @@ document.addEventListener("DOMContentLoaded", () => {
         return headers;
     }
 
-
-    // =====================================
-    // ABRIR CARRINHO
-    // =====================================
-
     offcanvas.addEventListener("show.bs.offcanvas", () => {
         carregarCarrinho();
     });
-
-
-    // =====================================
-    // CARREGAR CARRINHO
-    // =====================================
 
     async function carregarCarrinho() {
 
         body.innerHTML = `
             <div class="text-center py-5">
-
                 <div class="spinner-border" role="status"></div>
 
                 <p class="text-muted mt-3 mb-0">
@@ -57,29 +44,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
         footer.innerHTML = "";
 
-
         try {
 
             const response = await fetch("/carrinho");
 
-
-            // =====================================
             // USUÁRIO NÃO LOGADO
-            // =====================================
-
-            if (
-                response.status === 401 ||
-                (
-                    response.redirected &&
-                    response.url.includes("/login")
-                )
-            ) {
-
+            if (response.status === 401 || (response.redirected && response.url.includes("/login"))) {
                 mostrarLoginNecessario();
 
                 return;
             }
-
 
             if (!response.ok) {
 
@@ -92,7 +66,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const itens = await response.json();
 
-
             if (!Array.isArray(itens)) {
 
                 throw new Error(
@@ -102,10 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
 
-            // =====================================
             // CARRINHO VAZIO
-            // =====================================
-
             if (itens.length === 0) {
 
                 mostrarCarrinhoVazio();
@@ -114,12 +84,8 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
 
-            // =====================================
             // MONTAR CARRINHO
-            // =====================================
-
             let total = 0;
-
 
             body.innerHTML = itens.map(item => {
 
@@ -134,131 +100,65 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 total += subtotal;
 
-
                 return `
                     <div class="border-bottom py-3">
-
                         <div class="d-flex justify-content-between">
-
                             <div class="flex-grow-1">
-
                                 <h6 class="mb-1">
                                     ${item.nome}
                                 </h6>
-
                                 <small class="text-muted">
                                     R$ ${formatarMoeda(preco)} cada
                                 </small>
-
                             </div>
-
-
-                            <button
-                                type="button"
-                                class="btn btn-sm btn-outline-danger btn-remover"
-                                data-item-id="${item.itemId}"
-                                title="Remover item">
-
+                            <button type="button" class="btn btn-sm btn-outline-danger btn-remover" data-item-id="${item.itemId}" title="Remover item">
                                 <i class="bi bi-trash"></i>
-
                             </button>
-
                         </div>
-
-
                         <div class="d-flex justify-content-between align-items-center mt-3">
-
                             <div class="d-flex align-items-center">
-
-                                <button
-                                    type="button"
-                                    class="btn btn-sm btn-light border btn-diminuir"
-                                    data-item-id="${item.itemId}"
-                                    data-quantidade="${quantidade}">
-
+                                <button type="button" class="btn btn-sm btn-light border btn-diminuir" data-item-id="${item.itemId}" data-quantidade="${quantidade}">
                                     <i class="bi bi-dash"></i>
-
                                 </button>
-
-
                                 <span class="mx-3">
                                     ${quantidade}
                                 </span>
-
-
-                                <button
-                                    type="button"
-                                    class="btn btn-sm btn-light border btn-aumentar"
-                                    data-item-id="${item.itemId}"
-                                    data-quantidade="${quantidade}">
-
+                                <button type="button" class="btn btn-sm btn-light border btn-aumentar" data-item-id="${item.itemId}" data-quantidade="${quantidade}">
                                     <i class="bi bi-plus"></i>
-
                                 </button>
-
                             </div>
-
-
                             <strong>
                                 R$ ${formatarMoeda(subtotal)}
                             </strong>
-
                         </div>
-
                     </div>
                 `;
 
             }).join("");
 
 
-            // =====================================
             // FOOTER
-            // =====================================
-
             footer.innerHTML = `
                 <div>
-
                     <div class="d-flex justify-content-between mb-3">
-
                         <span class="fw-semibold">
                             Total
                         </span>
-
                         <span class="fw-bold fs-5">
                             R$ ${formatarMoeda(total)}
                         </span>
-
                     </div>
-
-
                     <div class="d-grid gap-2">
-
-                        <button
-                            type="button"
-                            class="btn btn-outline-danger"
-                            id="esvaziarCarrinho">
-
+                        <button type="button" class="btn btn-outline-danger" id="esvaziarCarrinho">
                             <i class="bi bi-trash me-2"></i>
-
                             Esvaziar carrinho
-
                         </button>
-
-
-                        <a
-                            href="/checkout"
-                            class="btn btn-red">
-
+                        <a href="/checkout" class="btn btn-red">
                             Finalizar compra
-
                         </a>
-
                     </div>
-
                 </div>
             `;
-
-
             configurarBotoes();
 
         } catch (error) {
@@ -280,35 +180,22 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    // =====================================
     // LOGIN NECESSÁRIO
-    // =====================================
-
     function mostrarLoginNecessario() {
 
         body.innerHTML = `
             <div class="text-center py-5 px-3">
-
                 <i class="bi bi-person-lock fs-1 text-muted"></i>
-
                 <h5 class="mt-3">
                     Você precisa realizar o login para acessar o carrinho
                 </h5>
-
                 <p class="text-muted">
                     Faça login para visualizar e gerenciar seus produtos.
                 </p>
-
-                <a
-                    href="/login"
-                    class="btn btn-red mt-2">
-
+                <a href="/login" class="btn btn-red mt-2">
                     <i class="bi bi-box-arrow-in-right me-2"></i>
-
                     Fazer login
-
                 </a>
-
             </div>
         `;
 
@@ -316,25 +203,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    // =====================================
     // CARRINHO VAZIO
-    // =====================================
-
     function mostrarCarrinhoVazio() {
 
         body.innerHTML = `
             <div class="text-center py-5">
-
                 <i class="bi bi-cart-x fs-1 text-muted"></i>
-
                 <h5 class="mt-3">
                     Seu carrinho está vazio
                 </h5>
-
                 <p class="text-muted mb-0">
                     Adicione produtos para começar sua compra.
                 </p>
-
             </div>
         `;
 
@@ -342,10 +222,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    // =====================================
     // CONFIGURAR BOTÕES
-    // =====================================
-
     function configurarBotoes() {
 
 
@@ -378,18 +255,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         // AUMENTAR
-
         document.querySelectorAll(".btn-aumentar")
             .forEach(botao => {
 
                 botao.addEventListener("click", () => {
 
-                    const itemId =
-                        botao.dataset.itemId;
+                    const itemId = botao.dataset.itemId;
 
-                    const quantidade =
-                        Number(botao.dataset.quantidade);
-
+                    const quantidade = Number(botao.dataset.quantidade);
 
                     alterarQuantidade(
                         itemId,
@@ -402,15 +275,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         // REMOVER
-
         document.querySelectorAll(".btn-remover")
             .forEach(botao => {
 
                 botao.addEventListener("click", () => {
 
-                    const itemId =
-                        botao.dataset.itemId;
-
+                    const itemId = botao.dataset.itemId;
 
                     removerItem(itemId);
 
@@ -420,7 +290,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         // ESVAZIAR
-
         const botaoEsvaziar =
             document.getElementById(
                 "esvaziarCarrinho"
@@ -439,10 +308,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    // =====================================
     // ALTERAR QUANTIDADE
-    // =====================================
-
     async function alterarQuantidade(itemId, quantidade) {
 
         try {
@@ -456,14 +322,7 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
 
-            if (
-                response.status === 401 ||
-                (
-                    response.redirected &&
-                    response.url.includes("/login")
-                )
-            ) {
-
+            if (response.status === 401 || (response.redirected && response.url.includes("/login"))) {
                 window.location.href = "/login";
 
                 return;
@@ -478,7 +337,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             }
 
-
             await carregarCarrinho();
 
         } catch (error) {
@@ -490,10 +348,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    // =====================================
     // REMOVER ITEM
-    // =====================================
-
     async function removerItem(itemId) {
 
         try {
@@ -507,14 +362,7 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
 
-            if (
-                response.status === 401 ||
-                (
-                    response.redirected &&
-                    response.url.includes("/login")
-                )
-            ) {
-
+            if (response.status === 401 || (response.redirected && response.url.includes("/login"))) {
                 window.location.href = "/login";
 
                 return;
@@ -522,11 +370,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
             if (!response.ok) {
-
                 throw new Error(
                     `Não foi possível remover o item. Status: ${response.status}`
                 );
-
             }
 
 
@@ -541,10 +387,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    // =====================================
     // ESVAZIAR CARRINHO
-    // =====================================
-
     async function esvaziarCarrinho() {
 
         try {
@@ -558,14 +401,7 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
 
-            if (
-                response.status === 401 ||
-                (
-                    response.redirected &&
-                    response.url.includes("/login")
-                )
-            ) {
-
+            if (response.status === 401 || (response.redirected && response.url.includes("/login"))) {
                 window.location.href = "/login";
 
                 return;
@@ -573,11 +409,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
             if (!response.ok) {
-
                 throw new Error(
                     `Não foi possível esvaziar o carrinho. Status: ${response.status}`
                 );
-
             }
 
 
@@ -592,16 +426,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    // =====================================
     // ADICIONAR PRODUTO
-    // =====================================
-
     const formAdicionarCarrinho =
         document.getElementById("formAdicionarCarrinho");
 
 
-    if (formAdicionarCarrinho &&
-        !formAdicionarCarrinho.dataset.listenerAdicionado) {
+    if (formAdicionarCarrinho && !formAdicionarCarrinho.dataset.listenerAdicionado) {
 
         formAdicionarCarrinho.dataset.listenerAdicionado = "true";
 
@@ -639,10 +469,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     );
 
 
-                    // =====================================
                     // NÃO LOGADO
-                    // =====================================
-
                     if (
                         response.status === 401 ||
                         (
@@ -666,14 +493,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
 
 
-                    // =====================================
                     // ABRIR CARRINHO
-                    // =====================================
-
-                    const offcanvasInstance =
-                        bootstrap.Offcanvas.getOrCreateInstance(
-                            offcanvas
-                        );
+                    const offcanvasInstance = bootstrap.Offcanvas.getOrCreateInstance(offcanvas);
 
                     offcanvasInstance.show();
 
@@ -695,10 +516,6 @@ document.addEventListener("DOMContentLoaded", () => {
         );
     }
 
-
-    // =====================================
-    // FORMATAR MOEDA
-    // =====================================
 
     function formatarMoeda(valor) {
 

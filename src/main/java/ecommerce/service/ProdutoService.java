@@ -63,12 +63,10 @@ public class ProdutoService {
         repository.save(produto);
     }
 
-    public List<Produto> buscarSemCategoria() {
-        return repository.buscarSemCategoria();
+    public List<Produto> buscarSemCategoria() {return repository.buscarSemCategoria();
     }
 
-    public boolean existeNome(String nome){
-        return repository.existsByNome(nome);
+    public boolean existeNome(String nome, Long id) {return repository.existsByNomeIgnoreCaseAndIdNot(nome, id);
     }
 
     public List<Produto> listarProdutosHome() {

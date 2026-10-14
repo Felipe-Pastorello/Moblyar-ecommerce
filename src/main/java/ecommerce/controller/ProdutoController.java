@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Controller
-@RequestMapping("/produtos")
+@RequestMapping("admin/produtos")
 public class ProdutoController {
 
     private final ProdutoService service;
@@ -52,7 +52,7 @@ public class ProdutoController {
 
         service.delete(id);
 
-        return "redirect:/produtos";
+        return "redirect:/admin/produtos";
     }
 
     @PostMapping("/save")
@@ -111,10 +111,10 @@ public class ProdutoController {
         service.save(produto);
 
         if(novoProduto){
-            return "redirect:/produtos?sucesso=cadastrado";
+            return "redirect:/admin/produtos?sucesso=cadastrado";
         }
 
-        return "redirect:/produtos?sucesso=editado";
+        return "redirect:/admin/produtos?sucesso=editado";
     }
 
     @GetMapping("/status/{id}")
@@ -123,7 +123,7 @@ public class ProdutoController {
 
         service.toggleStatus(id);
 
-        return "redirect:/produtos";
+        return "redirect:/admin/produtos";
     }
 
     @GetMapping("/removerCategoria")
@@ -142,14 +142,16 @@ public class ProdutoController {
 
         service.save(produto);
 
-        return "redirect:/categorias";
+        return "redirect:/admin/categorias";
     }
 
     @GetMapping("/existe")
     @ResponseBody
-    public boolean existeNome(String nome){
+    public boolean existeNome(
+            @RequestParam String nome,
+            @RequestParam(required = false) Long id) {
 
-        return service.existeNome(nome);
+        return service.existeNome(nome, id);
     }
 
     @GetMapping("/{id}/imagens")
@@ -170,7 +172,7 @@ public class ProdutoController {
 
         imagemRepository.deleteById(id);
     }
-
+/*
     @GetMapping("/busca")
     public String buscarProdutos(
             @RequestParam(required = false) String termo,
@@ -204,7 +206,7 @@ public class ProdutoController {
                 categoriaService.listarAtivas());
 
         return "produtos/busca";
-    }
+    }*/
 
 
 }

@@ -1,86 +1,146 @@
+
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Categorias</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Categorias - Moblyar</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/body.css}">
     <link rel="stylesheet" th:href="@{/css/GerenciarCategorias.css}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 </head>
+
 <body style="background-color: #F1F0F5">
+
 <div class="container py-5 py-lg-8">
+
     <div class="d-flex justify-content-between align-items-center">
         <h2 class="mb-3">Painel do Administrador</h2>
-        <button class="btn btn-red mb-4" data-bs-toggle="modal" data-bs-target="#categoriaModal" onclick="novaCategoria()">
+
+        <button type="button"
+                class="btn btn-red mb-4"
+                data-bs-toggle="modal"
+                data-bs-target="#categoriaModal"
+                onclick="novaCategoria()">
             <i class="bi bi-plus-circle me-2"></i>Nova Categoria
         </button>
     </div>
+
     <div class="mb-4">
-        <a th:href="@{/produtos}" class="btn btn-light border border-2">Editar Produtos</a>
-    </div>
-    <div class="card mb-5 p-2 p-sm-4" th:each="c : ${categorias}" th:classappend="${c.status == 'INATIVO'} ? ' categoria-inativa' : ''">
-    <div class="d-grid d-sm-flex justify-content-between">
-        <div>
-            <div class="d-flex">
-                <i class="bi bi-folder fw-semibold me-2"></i><h5 th:text="${c.nome + ' - ' + c.status}"></h5>
-            </div>
-            <small>
-                ID:
-                <span th:text="${c.id}">
-                </span>
-                •
-                <span th:text="${#lists.size(c.produtos)}">
-                </span>
-                produtos
-            </small>
-        </div>
-        <div class="mt-2 mt-sm-0">
-            <button class="btn btn-lightn btn-editar" data-bs-toggle="modal" data-bs-target="#categoriaModal" th:attr="data-id=${c.id}, data-nome=${c.nome}">
-                <i class="bi bi-pencil"></i>
+        <a th:href="@{/admin/produtos}"
+           class="btn btn-light border border-2">
+            Editar Produtos
+        </a>
+
+        <form th:action="@{/admin/logout}" method="post" class="d-inline">
+            <button type="submit" class="btn btn-outline-secondary ms-2">
+                Sair do painel
             </button>
-            <a th:href="@{/categorias/status/{id}(id=${c.id})}" class="btn" th:classappend="${c.status == 'ATIVO'} ? ' btn-danger' : ' btn-success'">
-                <span th:text="${c.status == 'ATIVO' ? 'Inativar' : 'Ativar'}">
-                </span>
-            </a>
-            <a th:href="@{/categorias/delete/{id}(id=${c.id})}" class="btn btn-lightn btn-excluir-categoria">
-                <i class="bi bi-trash text-danger"></i>
-            </a>
-        </div>
+        </form>
     </div>
-    <div class="d-none d-lg-flex mt-2">
-        <p class="offset-1 col-lg-2 mb-0">Imagem</p>
-        <p class="col-lg-2 mb-0">Nome</p>
-        <p class="col-lg-2 mb-0">Preço</p>
-        <p class="col-lg-2 mb-0">Estoque</p>
-        <p class="col-lg-2 mb-0">Deletar</p>
-    </div>
-    <hr>
-    <table class="table">
-        <tbody class="d-grid d-sm-flex flex-wrap d-lg-grid">
-        <tr th:each="p:${c.produtos}" class="d-grid d-lg-flex border-bottom px-2 px-lg-0 rounded rounded-3 col-12 col-sm-6 col-lg-12 mb-3">
-            <td class="border-bottom-0 offset-lg-1 col-lg-2 bg-sm-light td-top">
-                <div th:if="${!#lists.isEmpty(p.imagens)}" style="width: 80px; height: 80px;">
-                    <img th:src="@{'/uploads/' + ${p.imagens[0].nomeArquivo}}" width="100" height="100" style="object-fit:cover; min-height: 80px; min-width: 80px;" class="rounded rounded-3 img-fluid">
+
+    <!-- Categorias cadastradas -->
+    <div class="card mb-5 p-2 p-sm-4"
+         th:each="c : ${categorias}"
+         th:classappend="${c.status == 'INATIVO'} ? ' categoria-inativa' : ''">
+
+        <div class="d-grid d-sm-flex justify-content-between">
+            <div>
+                <div class="d-flex">
+                    <i class="bi bi-folder fw-semibold me-2"></i>
+                    <h5 th:text="${c.nome + ' - ' + c.status}"></h5>
                 </div>
-            </td>
-            <td th:text="${p.nome}" class="d-flex align-items-center border-bottom-0 col-lg-2 bg-sm-light nome-prod">
-            </td>
-            <td th:text="${#numbers.formatDecimal(p.preco, 1, 2)}" class="d-flex align-items-center border-bottom-0 col-lg-2 bg-sm-light preco-prod">
-            </td>
-            <td th:text="${p.estoque}" class="d-flex align-items-center border-bottom-0 col-lg-2 bg-sm-light estoque-prod">
-            </td>
-            <td class="d-flex align-items-center border-bottom-0 col-lg-2 bg-sm-light td-bottom">
-                <a th:href="@{/produtos/removerCategoria(produtoId=${p.id}, categoriaId=${c.id})}" class="btn btn-lightn btn-sm d-flex align-items-center border-bottom-0">
-                   <span class="me-2"><i class="bi bi-x-lg fw-semibold"></i></span> Remover
+
+                <small>
+                    ID:
+                    <span th:text="${c.id}"></span>
+                    •
+                    <span th:text="${#lists.size(c.produtos)}"></span>
+                    produtos
+                </small>
+            </div>
+
+            <div class="mt-2 mt-sm-0">
+                <button type="button"
+                        class="btn btn-lightn btn-editar"
+                        data-bs-toggle="modal"
+                        data-bs-target="#categoriaModal"
+                        th:attr="data-id=${c.id}, data-nome=${c.nome}">
+                    <i class="bi bi-pencil"></i>
+                </button>
+
+                <a th:href="@{/admin/categorias/status/{id}(id=${c.id})}"
+                   class="btn"
+                   th:classappend="${c.status == 'ATIVO'} ? ' btn-danger' : ' btn-success'">
+                    <span th:text="${c.status == 'ATIVO' ? 'Inativar' : 'Ativar'}"></span>
                 </a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+
+                <a th:href="@{/admin/categorias/delete/{id}(id=${c.id})}"
+                   class="btn btn-lightn btn-excluir-categoria">
+                    <i class="bi bi-trash text-danger"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="d-none d-lg-flex mt-2">
+            <p class="offset-1 col-lg-2 mb-0">Imagem</p>
+            <p class="col-lg-2 mb-0">Nome</p>
+            <p class="col-lg-2 mb-0">Preço</p>
+            <p class="col-lg-2 mb-0">Estoque</p>
+            <p class="col-lg-2 mb-0">Deletar</p>
+        </div>
+
+        <hr>
+
+        <table class="table">
+            <tbody class="d-grid d-sm-flex flex-wrap d-lg-grid">
+
+            <tr th:each="p : ${c.produtos}"
+                class="d-grid d-lg-flex border-bottom px-2 px-lg-0 rounded rounded-3 col-12 col-sm-6 col-lg-12 mb-3">
+
+                <td class="border-bottom-0 offset-lg-1 col-lg-2 bg-sm-light td-top">
+                    <div th:if="${!#lists.isEmpty(p.imagens)}"
+                         style="width: 80px; height: 80px;">
+                        <img th:src="@{'/uploads/' + ${p.imagens[0].nomeArquivo}}"
+                             width="100"
+                             height="100"
+                             style="object-fit: cover; min-height: 80px; min-width: 80px;"
+                             class="rounded rounded-3 img-fluid">
+                    </div>
+                </td>
+
+                <td th:text="${p.nome}"
+                    class="d-flex align-items-center border-bottom-0 col-lg-2 bg-sm-light nome-prod">
+                </td>
+
+                <td th:text="${#numbers.formatDecimal(p.preco, 1, 2)}"
+                    class="d-flex align-items-center border-bottom-0 col-lg-2 bg-sm-light preco-prod">
+                </td>
+
+                <td th:text="${p.estoque}"
+                    class="d-flex align-items-center border-bottom-0 col-lg-2 bg-sm-light estoque-prod">
+                </td>
+
+                <td class="d-flex align-items-center border-bottom-0 col-lg-2 bg-sm-light td-bottom">
+                    <a th:href="@{/admin/produtos/removerCategoria(produtoId=${p.id}, categoriaId=${c.id})}"
+                       class="btn btn-lightn btn-sm d-flex align-items-center border-bottom-0">
+                        <span class="me-2">
+                            <i class="bi bi-x-lg fw-semibold"></i>
+                        </span>
+                        Remover
+                    </a>
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Produtos sem categoria -->
     <div class="card mb-5 p-2 p-sm-4">
+
         <div class="d-flex justify-content-between">
             <div>
                 <h5>Sem Categoria</h5>
@@ -90,166 +150,204 @@
                 </small>
             </div>
         </div>
+
         <hr>
+
         <div class="d-none d-lg-flex mt-2">
             <p class="offset-1 col-lg-2 mb-0">Imagem</p>
             <p class="col-lg-2 mb-0">Nome</p>
             <p class="col-lg-2 mb-0">Preço</p>
             <p class="col-lg-2 mb-0">Estoque</p>
         </div>
+
         <table class="table">
             <tbody class="d-grid d-sm-flex flex-wrap d-lg-grid">
-            <tr th:each="p : ${produtosSemCategoria}" class="d-grid d-lg-flex border-bottom px-2 px-lg-0 rounded rounded-3 col-12 col-sm-6 col-lg-12 mb-3">
+
+            <tr th:each="p : ${produtosSemCategoria}"
+                class="d-grid d-lg-flex border-bottom px-2 px-lg-0 rounded rounded-3 col-12 col-sm-6 col-lg-12 mb-3">
+
                 <td class="border-bottom-0 offset-lg-1 col-lg-2 bg-sm-light td-top">
-                    <div th:if="${!#lists.isEmpty(p.imagens)}" style="width: 80px; height: 80px;">
-                        <img th:src="@{'/uploads/' + ${p.imagens[0].nomeArquivo}}" width="100" height="100" style="object-fit:cover; height: 80px; width: 80px;" class="rounded rounded-4">
+                    <div th:if="${!#lists.isEmpty(p.imagens)}"
+                         style="width: 80px; height: 80px;">
+                        <img th:src="@{'/uploads/' + ${p.imagens[0].nomeArquivo}}"
+                             width="80"
+                             height="80"
+                             style="object-fit: cover;"
+                             class="rounded rounded-4">
                     </div>
                 </td>
-                <td th:text="${p.nome}" class="d-flex align-items-center border-bottom-0 col-lg-2 bg-sm-light nome-prod"></td>
-                <td th:text="${#numbers.formatDecimal(p.preco, 1, 2)}" class="d-flex align-items-center border-bottom-0 col-lg-2 bg-sm-light preco-prod"></td>
-                <td th:text="${p.estoque}" class="d-flex align-items-center border-bottom-0 col-lg-2 bg-sm-light td-bottom estoque-prod"></td>
+
+                <td th:text="${p.nome}"
+                    class="d-flex align-items-center border-bottom-0 col-lg-2 bg-sm-light nome-prod">
+                </td>
+
+                <td th:text="${#numbers.formatDecimal(p.preco, 1, 2)}"
+                    class="d-flex align-items-center border-bottom-0 col-lg-2 bg-sm-light preco-prod">
+                </td>
+
+                <td th:text="${p.estoque}"
+                    class="d-flex align-items-center border-bottom-0 col-lg-2 bg-sm-light td-bottom estoque-prod">
+                </td>
             </tr>
+
             </tbody>
         </table>
     </div>
 </div>
 
-<div class="modal fade" id="categoriaModal">
+<!-- Modal de categoria -->
+<div class="modal fade" id="categoriaModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form id="formCategoria" th:action="@{/categorias/save}" method="post">
+
+            <form id="formCategoria"
+                  th:action="@{/admin/categorias/save}"
+                  method="post">
+
                 <div class="modal-header">
-                    <h5>Categoria</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal">
+                    <h5 class="modal-title">Categoria</h5>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Fechar">
                     </button>
                 </div>
+
                 <div class="modal-body">
                     <input type="hidden" id="categoriaId" name="id">
-                    <label>Nome</label>
-                    <input type="text" class="form-control" id="categoriaNome" name="nome">
-                    <small id="erroNome"
-                           class="text-danger"></small>
+
+                    <label for="categoriaNome" class="form-label">Nome</label>
+                    <input type="text"
+                           class="form-control"
+                           id="categoriaNome"
+                           name="nome"
+                           required>
+
+                    <small id="erroNome" class="text-danger"></small>
                 </div>
+
                 <div class="modal-footer">
-                    <button id="btnSalvar" class="btn btn-success">
+                    <button type="submit" id="btnSalvar" class="btn btn-success">
                         Salvar
                     </button>
                 </div>
+
             </form>
         </div>
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
-    document.querySelectorAll('.btn-editar')
-        .forEach(btn=>{
-
-            btn.addEventListener('click',function(){
-
-                document.getElementById(
-                    "categoriaId"
-                ).value=this.dataset.id;
-
-                document.getElementById(
-                    "categoriaNome"
-                ).value=this.dataset.nome;
-
-            });
-
-        });
-
+    const categoriaModal = document.getElementById("categoriaModal");
+    const formCategoria = document.getElementById("formCategoria");
+    const categoriaIdInput = document.getElementById("categoriaId");
     const nomeInput = document.getElementById("categoriaNome");
     const erroNome = document.getElementById("erroNome");
     const btnSalvar = document.getElementById("btnSalvar");
 
-    let nomeValido = true;
+    let nomeValido = false;
+    let validacaoAtual = 0;
+
+    document.querySelectorAll(".btn-editar").forEach(btn => {
+        btn.addEventListener("click", function () {
+            categoriaIdInput.value = this.dataset.id;
+            nomeInput.value = this.dataset.nome;
+            erroNome.textContent = "";
+            btnSalvar.disabled = false;
+            nomeValido = true;
+        });
+    });
+
+    function novaCategoria() {
+        categoriaIdInput.value = "";
+        nomeInput.value = "";
+        erroNome.textContent = "";
+        btnSalvar.disabled = false;
+        nomeValido = false;
+        validacaoAtual++;
+    }
 
     nomeInput.addEventListener("input", async () => {
+        const nome = nomeInput.value.trim();
+        const id = categoriaIdInput.value;
+        const validacao = ++validacaoAtual;
 
-        if(nomeInput.value.trim() === ""){
-
-            erroNome.textContent =
-                "O nome é obrigatório.";
-
+        if (!nome) {
+            erroNome.textContent = "O nome é obrigatório.";
             btnSalvar.disabled = true;
-
             nomeValido = false;
-
             return;
         }
 
-        const categoriaId =
-            document.getElementById("categoriaId").value;
+        btnSalvar.disabled = true;
+        erroNome.textContent = "Verificando nome...";
 
-        const response = await fetch(
-            `/categorias/existe?nome=${encodeURIComponent(nomeInput.value)}&id=${categoriaId}`
-        );
+        try {
+            const params = new URLSearchParams({ nome });
 
-        const existe = await response.json();
+            if (id) {
+                params.set("id", id);
+            }
 
-        if(existe){
+            const response = await fetch(
+                `/admin/categorias/existe?${params.toString()}`
+            );
 
-            erroNome.textContent =
-                "Já existe uma categoria com esse nome.";
+            if (!response.ok) {
+                throw new Error("Falha ao verificar o nome.");
+            }
 
+            const existe = await response.json();
+
+            if (validacao !== validacaoAtual) {
+                return;
+            }
+
+            if (existe) {
+                erroNome.textContent = "Já existe uma categoria com esse nome.";
+                btnSalvar.disabled = true;
+                nomeValido = false;
+            } else {
+                erroNome.textContent = "";
+                btnSalvar.disabled = false;
+                nomeValido = true;
+            }
+        } catch (error) {
+            if (validacao !== validacaoAtual) {
+                return;
+            }
+
+            erroNome.textContent = "Não foi possível validar o nome. Tente novamente.";
             btnSalvar.disabled = true;
-
             nomeValido = false;
-
-        }else{
-
-            erroNome.textContent = "";
-
-            btnSalvar.disabled = false;
-
-            nomeValido = true;
         }
     });
 
-    document.getElementById("formCategoria")
-        .addEventListener("submit", function(e){
+    formCategoria.addEventListener("submit", function (event) {
+        if (!nomeInput.value.trim() || !nomeValido) {
+            event.preventDefault();
 
-            if(
-                !nomeValido ||
-                document.getElementById("categoriaNome")
-                    .value.trim() === ""
-            ){
-
-                e.preventDefault();
-
-                erroNome.textContent =
-                    "O nome é obrigatório.";
+            if (!nomeInput.value.trim()) {
+                erroNome.textContent = "O nome é obrigatório.";
+            } else if (!erroNome.textContent) {
+                erroNome.textContent = "Aguarde a validação do nome.";
             }
+        }
+    });
 
-        });
-
-    function novaCategoria(){
-
-        document.getElementById(
-            "categoriaId"
-        ).value = "";
-
-        document.getElementById(
-            "categoriaNome"
-        ).value = "";
-
+    categoriaModal.addEventListener("hidden.bs.modal", () => {
         erroNome.textContent = "";
-
-        btnSalvar.disabled = false;
-
-        nomeValido = true;
-    }
+    });
 </script>
-<!--SweetAlerts-->
+
+<!-- Alertas de sucesso -->
 <script th:if="${param.sucesso != null}">
+    const tipo = "[[${param.sucesso[0]}]]";
 
-    const tipo =
-        "[[${param.sucesso[0]}]]";
-
-    if(tipo === "cadastrada"){
-
+    if (tipo === "cadastrada") {
         Swal.fire({
             icon: "success",
             title: "Categoria criada!",
@@ -257,9 +355,7 @@
             timer: 2500,
             showConfirmButton: false
         });
-
-    }else if(tipo === "editada"){
-
+    } else if (tipo === "editada") {
         Swal.fire({
             icon: "success",
             title: "Categoria atualizada!",
@@ -267,46 +363,34 @@
             timer: 2500,
             showConfirmButton: false
         });
-
     }
-
 </script>
+
+<!-- Confirmação de exclusão -->
 <script>
+    document.querySelectorAll(".btn-excluir-categoria").forEach(btn => {
+        btn.addEventListener("click", function (event) {
+            event.preventDefault();
 
-    document
-        .querySelectorAll(".btn-excluir-categoria")
-        .forEach(btn => {
+            const url = this.getAttribute("href");
 
-            btn.addEventListener("click", function(e){
-
-                e.preventDefault();
-
-                const url =
-                    this.getAttribute("href");
-
-                Swal.fire({
-                    title: "Tem certeza?",
-                    text: "Esta categoria será excluída.",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#dc3545",
-                    cancelButtonColor: "#6c757d",
-                    confirmButtonText: "Sim, excluir",
-                    cancelButtonText: "Cancelar"
-                }).then((result) => {
-
-                    if(result.isConfirmed){
-
-                        window.location.href =
-                            url;
-                    }
-
-                });
-
+            Swal.fire({
+                title: "Tem certeza?",
+                text: "Esta categoria será excluída.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#dc3545",
+                cancelButtonColor: "#6c757d",
+                confirmButtonText: "Sim, excluir",
+                cancelButtonText: "Cancelar"
+            }).then(result => {
+                if (result.isConfirmed) {
+                    window.location.href = url;
+                }
             });
-
         });
-
+    });
 </script>
+
 </body>
 </html>

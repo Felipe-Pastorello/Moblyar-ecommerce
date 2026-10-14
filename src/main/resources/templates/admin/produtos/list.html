@@ -1,30 +1,55 @@
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Produtos</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/body.css}">
     <link rel="stylesheet" th:href="@{/css/GerenciarProdutos.css}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 </head>
+
 <body style="background-color: #F1F0F5">
+
 <div class="container py-5">
-    <div class="d-flex justify-content-between align-items-center">
+
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
         <h2 class="mb-3">Painel do Administrador</h2>
-        <button class="btn btn-red mb-4" data-bs-toggle="modal" data-bs-target="#productModal" onclick="novoProduto()">
-            <i class="bi bi-plus-circle me-2"></i>Novo Produto
-        </button>
+
+        <div class="d-flex gap-2">
+            <form th:action="@{/admin/logout}" method="post">
+                <button type="submit" class="btn btn-outline-secondary mb-4">
+                    <i class="bi bi-box-arrow-right me-2"></i>Sair
+                </button>
+            </form>
+
+            <button class="btn btn-red mb-4"
+                    type="button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#productModal"
+                    onclick="novoProduto()">
+                <i class="bi bi-plus-circle me-2"></i>Novo Produto
+            </button>
+        </div>
     </div>
+
     <div class="mb-4">
-        <a th:href="@{/categorias}" class="btn btn-light border border-2">Editar Categorias</a>
+        <a th:href="@{/admin/categorias}"
+           class="btn btn-light border border-2">
+            Editar Categorias
+        </a>
     </div>
+
     <div class="d-grid bg-white rounded rounded-4 p-4">
+
         <small class="mb-4 fw-semibold">
             Produtos
             (<span th:text="${paginaProdutos.totalElements}"></span>)
         </small>
+
         <div class="d-none d-lg-flex my-2">
             <p class="offset-1 col-lg-2 mb-0">Imagem</p>
             <p class="col-lg-2 mb-0">Nome</p>
@@ -32,175 +57,428 @@
             <p class="col-lg-2 mb-0">Estoque</p>
             <p class="col-lg-2 mb-0">Ação</p>
         </div>
+
         <div class="d-flex flex-wrap d-lg-grid">
-            <div class="col-12 col-sm-6 col-lg-12 px-2 px-lg-0 mb-3 mb-lg-0" th:each="p : ${produtos}">
-                <div class="card border-0 rounded-0 card-produtos" th:style="${p.status == 'INATIVO'}? 'opacity:0.5': 'opacity:1'">
+
+            <div class="col-12 col-sm-6 col-lg-12 px-2 px-lg-0 mb-3 mb-lg-0"
+                 th:each="p : ${produtos}">
+
+                <div class="card border-0 rounded-0 card-produtos"
+                     th:style="${p.status == 'INATIVO'} ? 'opacity:0.5' : 'opacity:1'">
+
                     <div class="card-body border-top border-bottom d-flex justify-content-around gap-2 gap-lg-0">
-                        <div th:if="${!#lists.isEmpty(p.imagens)}" class="col-12 col-lg-2 offset-lg-1">
-                            <img th:src="@{'/uploads/' + ${p.imagens[0].nomeArquivo}}" width="100" height="100" class="rounded" style="object-fit:cover; max-height: 64px; max-width: 64px;">
+
+                        <div th:if="${!#lists.isEmpty(p.imagens)}"
+                             class="col-12 col-lg-2 offset-lg-1">
+
+                            <img th:src="@{'/uploads/' + ${p.imagens[0].nomeArquivo}}"
+                                 width="100"
+                                 height="100"
+                                 class="rounded"
+                                 alt="Imagem do produto"
+                                 style="object-fit:cover; max-height:64px; max-width:64px;">
                         </div>
-                        <h5 class="card-title col-12 col-lg-2 d-flex align-items-center mb-0 pe-2" th:text="${p.nome}"></h5>
-                        <!--<p th:text="${p.descricao}"></p>-->
-                        <p class="col-12 col-lg-2 d-flex align-items-center mb-0 pe-2"><strong class="me-2">R$: </strong> <span th:text="${#numbers.formatDecimal(p.preco, 1, 2)}"></span></p>
-                        <p class="col-12 col-lg-2 d-flex align-items-center mb-0 pe-2"><strong class="me-2">Estoque: </strong> <span th:text="${p.estoque}"></span></p>
+
+                        <h5 class="card-title col-12 col-lg-2 d-flex align-items-center mb-0 pe-2"
+                            th:text="${p.nome}">
+                        </h5>
+
+                        <p class="col-12 col-lg-2 d-flex align-items-center mb-0 pe-2">
+                            <strong class="me-2">R$:</strong>
+                            <span th:text="${#numbers.formatDecimal(p.preco, 1, 2)}"></span>
+                        </p>
+
+                        <p class="col-12 col-lg-2 d-flex align-items-center mb-0 pe-2">
+                            <strong class="me-2">Estoque:</strong>
+                            <span th:text="${p.estoque}"></span>
+                        </p>
+
                         <div class="col-12 col-lg-3 d-flex align-items-center justify-content-around">
-                            <button class="btn btn-light btn-editar" data-bs-toggle="modal" data-bs-target="#productModal" th:attr="data-id=${p.id}, data-name=${p.nome}, data-description=${p.descricao}, data-price=${p.preco}, data-stock=${p.estoque}">
+
+                            <button type="button"
+                                    class="btn btn-light btn-editar"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#productModal"
+                                    th:attr="data-id=${p.id},
+                                             data-name=${p.nome},
+                                             data-description=${p.descricao},
+                                             data-price=${p.preco},
+                                             data-stock=${p.estoque}">
+
                                 <i class="bi bi-pen"></i>
                             </button>
-                            <a th:href="@{/produtos/delete/{id}(id=${p.id})}" class="btn btn-light btn-excluir">
+
+                            <a th:href="@{/admin/produtos/delete/{id}(id=${p.id})}"
+                               class="btn btn-light btn-excluir">
+
                                 <i class="bi bi-trash text-red"></i>
                             </a>
-                            <a th:href="@{/produtos/status/{id}(id=${p.id})}"
-                               th:classappend="${p.status == 'ATIVO'} ? 'btn-danger' : 'btn-success'" class="btn btn-sm">
+
+                            <a th:href="@{/admin/produtos/status/{id}(id=${p.id})}"
+                               th:classappend="${p.status == 'ATIVO'} ? 'btn-danger' : 'btn-success'"
+                               class="btn btn-sm">
+
                                 <span th:text="${p.status == 'ATIVO'} ? 'Inativar' : 'Ativar'"></span>
                             </a>
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
     <nav class="mt-4" th:if="${paginaProdutos.totalPages > 1}">
         <ul class="pagination justify-content-center">
 
-            <li class="page-item" th:classappend="${paginaProdutos.first} ? 'disabled'">
-                <a class="page-link" th:href="@{/produtos(pagina=${paginaProdutos.number - 1})}">
+            <li class="page-item"
+                th:classappend="${paginaProdutos.first} ? 'disabled'">
+
+                <a class="page-link"
+                   th:href="@{/admin/produtos(pagina=${paginaProdutos.number - 1})}">
+
                     <i class="bi bi-chevron-left"></i>
                 </a>
             </li>
-            <li class="page-item" th:each="i : ${#numbers.sequence(0, paginaProdutos.totalPages - 1)}" th:classappend="${i == paginaProdutos.number} ? 'active'">
-                <a class="page-link" th:text="${i + 1}" th:href="@{/produtos(pagina=${i})}">
+
+            <li class="page-item"
+                th:each="i : ${#numbers.sequence(0, paginaProdutos.totalPages - 1)}"
+                th:classappend="${i == paginaProdutos.number} ? 'active'">
+
+                <a class="page-link"
+                   th:text="${i + 1}"
+                   th:href="@{/admin/produtos(pagina=${i})}">
                 </a>
             </li>
-            <li class="page-item" th:classappend="${paginaProdutos.last} ? 'disabled'">
-                <a class="page-link" th:href="@{/produtos(pagina=${paginaProdutos.number + 1})}">
+
+            <li class="page-item"
+                th:classappend="${paginaProdutos.last} ? 'disabled'">
+
+                <a class="page-link"
+                   th:href="@{/admin/produtos(pagina=${paginaProdutos.number + 1})}">
+
                     <i class="bi bi-chevron-right"></i>
                 </a>
             </li>
+
         </ul>
     </nav>
-    <div class="modal fade" id="productModal" >
+
+    <div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="formProduto" th:action="@{/produtos/save}" method="post" enctype="multipart/form-data">
+
+                <form id="formProduto"
+                      th:action="@{/admin/produtos/save}"
+                      method="post"
+                      enctype="multipart/form-data">
+
                     <div class="modal-header">
                         <h5 class="modal-title">Produto</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Fechar">
+                        </button>
                     </div>
+
                     <div class="modal-body">
+
                         <div class="mb-3">
-                            <input type="file" name="arquivos" id="arquivos" multiple class="form-control">
+                            <input type="file"
+                                   name="arquivos"
+                                   id="arquivos"
+                                   multiple
+                                   accept="image/*"
+                                   class="form-control">
+
                             <div id="imagensExistentes"></div>
+
                             <small class="text-muted">
-                                Você pode selecionar várias imagens
-                                <br>
+                                Você pode selecionar várias imagens.
                             </small>
+
+                            <br>
+
                             <small id="erroImagem" class="text-danger"></small>
                         </div>
+
                         <input type="hidden" name="id" id="id">
+
                         <div class="mb-3">
-                            <label>Nome</label>
-                            <input type="text" name="nome" id="name" class="form-control">
+                            <label for="name" class="form-label">Nome</label>
+
+                            <input type="text"
+                                   name="nome"
+                                   id="name"
+                                   class="form-control"
+                                   required>
+
                             <small id="erroNome" class="text-danger"></small>
                         </div>
-                        <label>Categorias</label>
-                        <select name="categoriaIds" multiple class="form-select" size="5">
-                            <option th:each="c : ${categorias}"
-                                    th:value="${c.id}"
-                                    th:text="${c.nome}"
-                                    th:selected="${produto != null and produto.categorias.contains(c)}">
-                            </option>
-                        </select>
-                        <small class="text-muted">
-                            Segure CTRL (Windows) ou CMD (Mac) para selecionar várias categorias
-                        </small>
+
                         <div class="mb-3">
-                            <label>Descrição</label>
-                            <input type="text" name="descricao" id="description" class="form-control">
+                            <label for="categorias" class="form-label">Categorias</label>
+
+                            <select name="categoriaIds"
+                                    id="categorias"
+                                    multiple
+                                    class="form-select"
+                                    size="5">
+
+                                <option th:each="c : ${categorias}"
+                                        th:value="${c.id}"
+                                        th:text="${c.nome}"
+                                        th:selected="${produto != null and produto.categorias.contains(c)}">
+                                </option>
+
+                            </select>
+
+                            <small class="text-muted">
+                                Segure CTRL (Windows) ou CMD (Mac) para selecionar várias categorias.
+                            </small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Descrição</label>
+
+                            <input type="text"
+                                   name="descricao"
+                                   id="description"
+                                   class="form-control"
+                                   required>
+
                             <small id="erroDescricao" class="text-danger"></small>
                         </div>
+
                         <div class="mb-3">
-                            <label>Preço</label>
-                            <input type="number" name="preco" id="price" class="form-control">
+                            <label for="price" class="form-label">Preço</label>
+
+                            <input type="number"
+                                   name="preco"
+                                   id="price"
+                                   class="form-control"
+                                   min="0.01"
+                                   step="0.01"
+                                   required>
+
                             <small id="erroPreco" class="text-danger"></small>
                         </div>
+
                         <div class="mb-3">
-                            <label>Estoque</label>
-                            <input type="number" name="estoque" id="stock" class="form-control">
+                            <label for="stock" class="form-label">Estoque</label>
+
+                            <input type="number"
+                                   name="estoque"
+                                   id="stock"
+                                   class="form-control"
+                                   min="0"
+                                   step="1"
+                                   required>
+
                             <small id="erroEstoque" class="text-danger"></small>
                         </div>
+
                     </div>
+
                     <div class="modal-footer">
-                        <button type="submit" id="btnSalvar" class="btn btn-success">Salvar</button>
+                        <button type="submit"
+                                id="btnSalvar"
+                                class="btn btn-success">
+
+                            Salvar
+                        </button>
                     </div>
+
                 </form>
             </div>
         </div>
     </div>
+
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
-    document.querySelectorAll('.btn-editar').forEach(btn => {
+    const formProduto = document.getElementById("formProduto");
+    const idInput = document.getElementById("id");
+    const nomeInput = document.getElementById("name");
+    const descricaoInput = document.getElementById("description");
+    const precoInput = document.getElementById("price");
+    const estoqueInput = document.getElementById("stock");
+    const arquivosInput = document.getElementById("arquivos");
+    const imagensContainer = document.getElementById("imagensExistentes");
+    const erroNome = document.getElementById("erroNome");
+    const btnSalvar = document.getElementById("btnSalvar");
 
-        btn.addEventListener('click', async function () {
+    let nomeValido = false;
+    let sequenciaValidacao = 0;
+    let nomeOriginal = "";
 
-            const produtoId = this.dataset.id;
+    async function verificarNome() {
+        const sequenciaAtual = ++sequenciaValidacao;
+        const nome = nomeInput.value.trim();
+        const produtoId = idInput.value;
 
-            document.getElementById("id").value = produtoId;
-            document.getElementById("name").value = this.dataset.name;
-            document.getElementById("description").value = this.dataset.description;
-            document.getElementById("price").value = this.dataset.price;
-            document.getElementById("stock").value = this.dataset.stock;
+        if (!nome) {
+            nomeValido = false;
+            erroNome.textContent = "O nome é obrigatório.";
+            btnSalvar.disabled = true;
+            return false;
+        }
 
-            const container =
-                document.getElementById(
-                    "imagensExistentes"
-                );
+        const params = new URLSearchParams({ nome });
 
-            container.innerHTML = "";
+        if (produtoId) {
+            params.set("id", produtoId);
+        }
 
-            const response =
-                await fetch(
-                    `/produtos/${produtoId}/imagens`
-                );
+        btnSalvar.disabled = true;
+        erroNome.textContent = "Verificando nome...";
 
-            const imagens =
-                await response.json();
+        try {
+            const response = await fetch(
+                `/admin/produtos/existe?${params.toString()}`
+            );
 
-            imagens.forEach(img => {
+            if (!response.ok) {
+                throw new Error("Falha ao verificar o nome.");
+            }
 
-                container.innerHTML += `
-<div
-    class="d-flex align-items-center gap-2 mb-2"
-    data-imagem-id="${img.id}">
+            const existe = await response.json();
 
-    <img
-        src="/uploads/${img.nomeArquivo}"
-        width="80"
-        height="80"
-        class="rounded"
-        style="object-fit:cover">
+            // Ignora respostas antigas de consultas anteriores.
+            if (sequenciaAtual !== sequenciaValidacao) {
+                return false;
+            }
 
-    <button
-        type="button"
-        class="btn btn-danger btn-sm"
-        onclick="excluirImagem(${img.id})">
+            if (existe) {
+                nomeValido = false;
+                erroNome.textContent = "Já existe um produto com esse nome.";
+                btnSalvar.disabled = true;
+                return false;
+            }
 
-        <i class="bi bi-trash"></i>
+            nomeValido = true;
+            erroNome.textContent = "";
+            btnSalvar.disabled = false;
 
-    </button>
+            return true;
 
-</div>
-`;
-            });
-        });
+        } catch (erro) {
+            if (sequenciaAtual === sequenciaValidacao) {
+                nomeValido = false;
+                erroNome.textContent = "Não foi possível verificar o nome. Tente novamente.";
+                btnSalvar.disabled = true;
+            }
+
+            console.error(erro);
+            return false;
+        }
+    }
+
+    nomeInput.addEventListener("input", () => {
+        verificarNome();
     });
 
-    async function excluirImagem(id){
+    function limparErros() {
+        document.querySelectorAll(
+            "#formProduto .text-danger"
+        ).forEach(elemento => {
+            elemento.textContent = "";
+        });
+    }
 
-        const result = await Swal.fire({
+    function novoProduto() {
+        sequenciaValidacao++;
+
+        formProduto.reset();
+        idInput.value = "";
+        imagensContainer.innerHTML = "";
+        nomeOriginal = "";
+        nomeValido = false;
+        btnSalvar.disabled = true;
+
+        limparErros();
+
+        // A validação será executada após o preenchimento do nome.
+    }
+
+    async function editarProduto(botao) {
+        sequenciaValidacao++;
+
+        formProduto.reset();
+        limparErros();
+
+        const produtoId = botao.dataset.id;
+
+        idInput.value = produtoId;
+        nomeInput.value = botao.dataset.name || "";
+        descricaoInput.value = botao.dataset.description || "";
+        precoInput.value = botao.dataset.price || "";
+        estoqueInput.value = botao.dataset.stock || "";
+
+        nomeOriginal = nomeInput.value.trim();
+        imagensContainer.innerHTML = "";
+
+        nomeValido = false;
+        btnSalvar.disabled = true;
+
+        try {
+            const response = await fetch(
+                `/admin/produtos/${produtoId}/imagens`
+            );
+
+            if (!response.ok) {
+                throw new Error("Não foi possível carregar as imagens.");
+            }
+
+            const imagens = await response.json();
+
+            imagens.forEach(img => {
+                const item = document.createElement("div");
+                item.className = "d-flex align-items-center gap-2 mb-2";
+                item.dataset.imagemId = img.id;
+
+                const imagem = document.createElement("img");
+                imagem.src = `/uploads/${encodeURIComponent(img.nomeArquivo)}`;
+                imagem.width = 80;
+                imagem.height = 80;
+                imagem.className = "rounded";
+                imagem.alt = "Imagem do produto";
+                imagem.style.objectFit = "cover";
+
+                const botaoExcluir = document.createElement("button");
+                botaoExcluir.type = "button";
+                botaoExcluir.className = "btn btn-danger btn-sm";
+                botaoExcluir.innerHTML = '<i class="bi bi-trash"></i>';
+                botaoExcluir.addEventListener("click", () => excluirImagem(img.id));
+
+                item.append(imagem, botaoExcluir);
+                imagensContainer.appendChild(item);
+            });
+
+            await verificarNome();
+
+        } catch (erro) {
+            console.error(erro);
+
+            Swal.fire(
+                "Erro",
+                "Não foi possível carregar as imagens do produto.",
+                "error"
+            );
+        }
+    }
+
+    document.querySelectorAll(".btn-editar").forEach(botao => {
+        botao.addEventListener("click", () => editarProduto(botao));
+    });
+
+    async function excluirImagem(id) {
+        const resultado = await Swal.fire({
             title: "Excluir imagem?",
             text: "Essa ação não poderá ser desfeita.",
             icon: "warning",
@@ -209,43 +487,37 @@
             cancelButtonText: "Cancelar"
         });
 
-        if(!result.isConfirmed){
+        if (!resultado.isConfirmed) {
             return;
         }
 
         try {
-
             const response = await fetch(
-                `/produtos/imagem/delete/${id}`
+                `/admin/produtos/imagem/delete/${id}`,
+                {
+                    method: "DELETE",
+                    headers: {
+                        [document.querySelector('meta[name="_csrf_header"]')?.content || "X-CSRF-TOKEN"]:
+                            document.querySelector('meta[name="_csrf"]')?.content || ""
+                    }
+                }
             );
 
-            if(response.ok){
-
-                document
-                    .querySelector(
-                        `[data-imagem-id="${id}"]`
-                    )
-                    ?.remove();
-
-                Swal.fire({
-                    title: "Imagem excluída!",
-                    icon: "success",
-                    timer: 1500,
-                    showConfirmButton: false
-                });
-
-            } else {
-
-                Swal.fire(
-                    "Erro",
-                    "Não foi possível excluir a imagem.",
-                    "error"
-                );
+            if (!response.ok) {
+                throw new Error("Não foi possível excluir a imagem.");
             }
 
-        } catch(e){
+            document.querySelector(`[data-imagem-id="${id}"]`)?.remove();
 
-            console.error(e);
+            Swal.fire({
+                title: "Imagem excluída!",
+                icon: "success",
+                timer: 1500,
+                showConfirmButton: false
+            });
+
+        } catch (erro) {
+            console.error(erro);
 
             Swal.fire(
                 "Erro",
@@ -255,167 +527,110 @@
         }
     }
 
-    function novoProduto() {
-        document.getElementById("imagensExistentes").innerHTML = "";
-        document.getElementById("id").value="";
-        document.getElementById("name").value="";
-        document.getElementById("description").value="";
-        document.getElementById("price").value="";
-        document.getElementById("stock").value="";
-
-        document.querySelector(
-            'input[name="arquivos"]'
-        ).value="";
-
-        document.querySelectorAll(".text-danger")
-            .forEach(el => el.textContent = "");
-
-        btnSalvar.disabled = false;
-        nomeValido = true;
-    }
-
     function validarFormulario() {
-
         let valido = true;
-
-        const nome = document.getElementById("name");
-        const descricao = document.getElementById("description");
-        const preco = document.getElementById("price");
-        const estoque = document.getElementById("stock");
-        const arquivos = document.getElementById("arquivos");
-        const editando = document.getElementById("id").value !== "";
 
         document.getElementById("erroDescricao").textContent = "";
         document.getElementById("erroPreco").textContent = "";
         document.getElementById("erroEstoque").textContent = "";
         document.getElementById("erroImagem").textContent = "";
 
-        if(nome.value.trim() === ""){
-            document.getElementById("erroNome").textContent =
-                "O nome é obrigatório.";
+        if (!nomeInput.value.trim()) {
+            erroNome.textContent = "O nome é obrigatório.";
             valido = false;
         }
 
-        if(descricao.value.trim() === ""){
+        if (!descricaoInput.value.trim()) {
             document.getElementById("erroDescricao").textContent =
                 "A descrição é obrigatória.";
             valido = false;
         }
 
-        if(preco.value === "" || parseFloat(preco.value) <= 0){
+        const preco = Number(precoInput.value);
+
+        if (precoInput.value === "" || !Number.isFinite(preco) || preco <= 0) {
             document.getElementById("erroPreco").textContent =
                 "O preço deve ser maior que zero.";
             valido = false;
         }
 
-        if(estoque.value === "" || parseInt(estoque.value) <= 0){
+        const estoque = Number(estoqueInput.value);
+
+        if (
+            estoqueInput.value === "" ||
+            !Number.isInteger(estoque) ||
+            estoque < 0
+        ) {
             document.getElementById("erroEstoque").textContent =
-                "O estoque deve ser maior que zero.";
+                "O estoque deve ser um número inteiro maior ou igual a zero.";
             valido = false;
         }
 
-        const imagensExistentes = document.querySelectorAll("#imagensExistentes [data-imagem-id]");
-        if(
-            arquivos.files.length === 0
-            &&
-            imagensExistentes.length === 0
-        ){
+        const imagensExistentes = imagensContainer.querySelectorAll("[data-imagem-id]");
+
+        if (arquivosInput.files.length === 0 && imagensExistentes.length === 0) {
             document.getElementById("erroImagem").textContent =
                 "O produto deve possuir ao menos uma imagem.";
-
             valido = false;
         }
 
         return valido;
     }
 
-    const nomeInput = document.getElementById("name");
-    const erroNome = document.getElementById("erroNome");
-    const btnSalvar = document.getElementById("btnSalvar");
+    formProduto.addEventListener("submit", async function(evento) {
+        evento.preventDefault();
 
-    let nomeValido = true;
-
-    nomeInput.addEventListener("input", async () => {
-
-        const response = await fetch(
-            `/produtos/existe?nome=${encodeURIComponent(nomeInput.value)}`
-        );
-
-        const existe = await response.json();
-
-        if(existe){
-
-            erroNome.textContent =
-                "Já existe um produto com esse nome.";
-
-            btnSalvar.disabled = true;
-
-            nomeValido = false;
-
-        }else{
-
-            erroNome.textContent = "";
-
-            btnSalvar.disabled = false;
-
-            nomeValido = true;
+        if (!validarFormulario()) {
+            return;
         }
+
+        const nomeEstaValido = await verificarNome();
+
+        if (!nomeEstaValido || !validarFormulario()) {
+            return;
+        }
+
+        // A submissão normal do formulário será feita somente após as validações.
+        formProduto.submit();
     });
 
-    document.getElementById("formProduto").addEventListener("submit", function(e){
+    document.querySelectorAll(".btn-excluir").forEach(botao => {
+        botao.addEventListener("click", async function(evento) {
+            evento.preventDefault();
 
-            if(!validarFormulario() || !nomeValido){
-                e.preventDefault();
-            }
-
-        });
-
-    document.querySelectorAll(".btn-excluir")
-        .forEach(btn => {
-
-            btn.addEventListener("click", function(e){
-
-                e.preventDefault();
-
-                const url = this.href;
-
-                Swal.fire({
-                    title: "Tem certeza?",
-                    text: "O produto será excluído permanentemente.",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonText: "Sim, excluir",
-                    cancelButtonText: "Cancelar"
-                }).then((result) => {
-
-                    if(result.isConfirmed){
-                        window.location.href = url;
-                    }
-                });
+            const resultado = await Swal.fire({
+                title: "Tem certeza?",
+                text: "O produto será excluído permanentemente.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Sim, excluir",
+                cancelButtonText: "Cancelar"
             });
+
+            if (resultado.isConfirmed) {
+                window.location.href = this.href;
+            }
         });
+    });
 
     const params = new URLSearchParams(window.location.search);
 
-    if(params.get("sucesso") === "cadastrado"){
-
+    if (params.get("sucesso") === "cadastrado") {
         Swal.fire({
             title: "Produto cadastrado!",
             text: "O produto foi criado com sucesso.",
             icon: "success"
         });
-
     }
 
-    if(params.get("sucesso") === "editado"){
-
+    if (params.get("sucesso") === "editado") {
         Swal.fire({
             title: "Produto atualizado!",
             text: "As alterações foram salvas.",
             icon: "success"
         });
-
     }
 </script>
+
 </body>
 </html>

@@ -17,6 +17,6 @@ public class AdminController {
             return "admin/login";
         }
 
-        return "redirect:/produtos";
+        return "redirect:/admin/produtos";
     }
 }

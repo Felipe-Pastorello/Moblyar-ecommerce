@@ -12,6 +12,7 @@ import java.util.Optional;
 public interface ProdutoRepository extends JpaRepository<Produto, Long> {
     List<Produto> findByStatus(String status);
     boolean existsByNome(String nome);
+    boolean existsByNomeIgnoreCaseAndIdNot(String nome, Long id);
     @Query("""
 SELECT p
 FROM Produto p
