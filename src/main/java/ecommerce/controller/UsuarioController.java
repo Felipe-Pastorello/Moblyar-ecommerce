@@ -1,6 +1,7 @@
 package ecommerce.controller;
 
 import ecommerce.entity.Usuario;
+import ecommerce.service.PedidoService;
 import ecommerce.service.UsuarioService;
 
 import org.springframework.stereotype.Controller;
@@ -12,9 +13,11 @@ import org.springframework.security.core.Authentication;
 public class UsuarioController {
 
     private final UsuarioService service;
+    private final PedidoService pedidoService;
 
-    public UsuarioController(UsuarioService service) {
+    public UsuarioController(UsuarioService service, PedidoService pedidoService) {
         this.service = service;
+        this.pedidoService = pedidoService;
     }
 
 
@@ -80,26 +83,25 @@ public class UsuarioController {
     }
 
     @GetMapping("/perfil")
-    public String perfil(
-            Authentication authentication,
-            Model model) {
+    public String perfil(Authentication authentication, Model model) {
 
-        if (authentication == null ||
-                !authentication.isAuthenticated() ||
-                authentication.getPrincipal().equals("anonymousUser")) {
-
+        if (authentication == null
+                || !authentication.isAuthenticated()
+                || authentication.getPrincipal().equals("anonymousUser")) {
             return "redirect:/login";
         }
 
-        Usuario usuario = service.buscarPorEmail(
-                authentication.getName()
-        );
+        Usuario usuario = service.buscarPorEmail(authentication.getName());
 
         if (usuario == null) {
             return "redirect:/login";
         }
 
         model.addAttribute("usuario", usuario);
+        model.addAttribute(
+                "pedidos",
+                pedidoService.buscarPedidosPorUsuario(usuario.getEmail())
+        );
 
         return "usuario/perfil";
     }

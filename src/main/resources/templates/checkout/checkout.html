@@ -19,8 +19,14 @@
         <h1 class="mt-3 fw-bold">
             Finalizar compra
         </h1>
+        <div th:if="${erroCheckout}"
+             class="alert alert-danger"
+             role="alert"
+             th:text="${erroCheckout}">
+        </div>
     </div>
     <div class="row g-4">
+        <form th:action="@{/checkout/finalizar}" method="post">
         <!-- PRODUTOS -->
         <div class="col-lg-8">
             <div class="card border-0 shadow-sm">
@@ -65,16 +71,13 @@
                             <i class="bi bi-geo-alt me-2"></i>
                             Endereço de entrega
                         </h4>
-                        <a href="/enderecos" class="btn btn-outline-secondary btn-sm">
-                            Gerenciar endereços
-                        </a>
                     </div>
 
                     <div th:if="${usuario.enderecos == null || usuario.enderecos.isEmpty()}" class="alert alert-warning">
                         <i class="bi bi-exclamation-triangle me-2"></i>
                         Você ainda não possui um endereço cadastrado.
                         <div class="mt-3">
-                            <a href="/enderecos" class="btn btn-dark">
+                            <a th:href="@{/perfil}" class="btn btn-dark">
                                 Cadastrar endereço
                             </a>
                         </div>
@@ -98,6 +101,10 @@
                                     </small>
                                 </label>
                             </div>
+                        </div>
+                        <hr>
+                        <div>
+                            <p class="text-center mb-0">Para adicionar, editar ou deletar utilize o menu de Gerenciar Endereços na página de <a th:href="@{/perfil}">perfil</a></p>
                         </div>
                     </div>
                 </div>
@@ -141,13 +148,14 @@
                             R$ 0,00
                         </strong>
                     </div>
-                    <button type="button" class="btn btn-dark w-100 py-3" id="continuarPagamento">
+                    <button type="submit" class="btn btn-dark w-100 py-3" id="continuarPagamento">
                         Continuar para pagamento
                         <i class="bi bi-arrow-right ms-2"></i>
                     </button>
                 </div>
             </div>
         </div>
+        </form>
     </div>
 </div>
 

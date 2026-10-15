@@ -17,6 +17,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.beans.factory.annotation.Qualifier;
+import ecommerce.service.UsuarioService;
 
 @Configuration
 public class SecurityConfig {
@@ -96,10 +97,11 @@ public class SecurityConfig {
     @Bean
     @Order(2)
     public SecurityFilterChain userSecurityFilterChain(
-            HttpSecurity http) throws Exception {
+            HttpSecurity http,
+            UsuarioService usuarioService) throws Exception {
+        http.userDetailsService(usuarioService);
 
-        http
-                .authorizeHttpRequests(auth -> auth
+        http.authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/",
                                 "/css/**",

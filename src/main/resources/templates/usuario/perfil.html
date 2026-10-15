@@ -1,68 +1,234 @@
 <!DOCTYPE html>
-<html lang="pt-BR"
-      xmlns:th="http://www.thymeleaf.org">
-
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Meu Perfil - Moblyar</title>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-          rel="stylesheet">
-
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <title>Minha Conta - Moblyar</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/perfil.css}">
 </head>
 
 <body>
 
 <div th:replace="~{includes/header :: header}"></div>
 
-<main class="container py-5">
+<main class="conta-main">
+    <div class="container conta-container">
 
-    <h1 class="mb-4">
-        Meu Perfil
-    </h1>
+        <!-- Cabeçalho -->
+        <div class="conta-heading">
+            <h1>Minha Conta</h1>
+            <p>Gerencie seu perfil e acompanhe seus pedidos</p>
+        </div>
 
-    <div class="card shadow-sm">
+        <!-- Navegação -->
+        <ul class="nav conta-tabs" id="contaTabs" role="tablist">
 
-        <div class="card-body">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active"
+                        id="perfil-tab"
+                        data-bs-toggle="tab"
+                        data-bs-target="#perfil"
+                        type="button"
+                        role="tab"
+                        aria-controls="perfil"
+                        aria-selected="true">
 
-            <h4 class="mb-4">
-                Dados da conta
-            </h4>
+                    <i class="bi bi-person"></i>
+                    <span>Perfil</span>
+                </button>
+            </li>
 
-            <div class="mb-3">
-                <strong>ID:</strong>
-                <span th:text="${usuario.id}"></span>
-            </div>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link"
+                        id="pedidos-tab"
+                        data-bs-toggle="tab"
+                        data-bs-target="#pedidos"
+                        type="button"
+                        role="tab"
+                        aria-controls="pedidos"
+                        aria-selected="false">
 
-            <div class="mb-3">
-                <strong>Nome:</strong>
-                <span th:text="${usuario.nome}"></span>
-            </div>
+                    <i class="bi bi-box-seam"></i>
+                    <span>Pedidos</span>
+                </button>
+            </li>
 
-            <div class="mb-3">
-                <strong>E-mail:</strong>
-                <span th:text="${usuario.email}"></span>
-            </div>
+        </ul>
 
-            <div>
-                <strong>Status:</strong>
-                <span class="text-success">
-                    <i class="bi bi-check-circle"></i>
-                    Logado
-                </span>
-            </div>
+        <!-- Conteúdo das abas -->
+        <div class="tab-content conta-tab-content">
+
+            <!-- ABA: PERFIL -->
+            <section class="tab-pane fade show active"
+                     id="perfil"
+                     role="tabpanel"
+                     aria-labelledby="perfil-tab"
+                     tabindex="0">
+
+                <div class="conta-card">
+
+                    <div class="conta-card-header">
+                        <div>
+                            <h2>Dados da conta</h2>
+                            <p>Confira suas informações pessoais</p>
+                        </div>
+
+                        <div class="conta-avatar">
+                            <i class="bi bi-person"></i>
+                        </div>
+                    </div>
+
+                    <div class="conta-info-grid">
+
+                        <div class="conta-info-item">
+                            <span class="conta-info-label">Nome completo</span>
+                            <span class="conta-info-value"
+                                  th:text="${usuario.nome}">Nome do usuário</span>
+                        </div>
+
+                        <div class="conta-info-item">
+                            <span class="conta-info-label">E-mail</span>
+                            <span class="conta-info-value"
+                                  th:text="${usuario.email}">email@exemplo.com</span>
+                        </div>
+
+                        <div class="conta-info-item">
+                            <span class="conta-info-label">Identificação da conta</span>
+                            <span class="conta-info-value"
+                                  th:text="${usuario.id}">1</span>
+                        </div>
+
+                        <div class="conta-info-item">
+                            <span class="conta-info-label">Status da sessão</span>
+                            <span class="conta-status">
+                                <i class="bi bi-check-circle-fill"></i>
+                                Conectado
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <div class="conta-card-footer">
+                        <span class="text-muted">
+                            <i class="bi bi-shield-check me-1"></i>
+                            Informações da sua conta Moblyar
+                        </span>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- ABA: PEDIDOS -->
+            <section class="tab-pane fade"
+                     id="pedidos"
+                     role="tabpanel"
+                     aria-labelledby="pedidos-tab"
+                     tabindex="0">
+
+                <!-- Estado vazio -->
+                <div class="conta-card conta-empty"
+                     th:if="${pedidos == null or #lists.isEmpty(pedidos)}">
+
+                    <i class="bi bi-bag-x"></i>
+                    <h2>Nenhum pedido encontrado</h2>
+                    <p>Quando você fizer uma compra, seus pedidos aparecerão aqui.</p>
+
+                    <a th:href="@{/}" class="btn btn-red">
+                        Explorar produtos
+                    </a>
+
+                </div>
+
+                <!-- Lista de pedidos -->
+                <div th:if="${pedidos != null and !#lists.isEmpty(pedidos)}"
+                     class="conta-pedidos">
+
+                    <article class="conta-card pedido-card"
+                             th:each="pedido : ${pedidos}">
+
+                        <div class="pedido-header">
+
+                            <div>
+                                <h2 th:text="|Pedido #${pedido.id}|">
+                                    Pedido #1
+                                </h2>
+
+                                <p class="pedido-data">
+                                    <i class="bi bi-calendar3"></i>
+                                    <span th:text="${#temporals.format(pedido.data, 'dd/MM/yyyy')}">
+                                        15/08/2026
+                                    </span>
+                                </p>
+                            </div>
+
+                            <div class="pedido-resumo">
+                                <span class="pedido-status"
+                                      th:text="${pedido.status}">
+                                    PENDENTE
+                                </span>
+
+                                <strong th:text="${#numbers.formatCurrency(pedido.total)}">
+                                    R$ 0,00
+                                </strong>
+                            </div>
+
+                        </div>
+
+                        <div class="pedido-itens">
+
+                            <div class="pedido-item"
+                                 th:each="item : ${pedido.items}">
+
+                                <div>
+                                    <span class="pedido-produto"
+                                          th:text="${item.produto.nome}">
+                                        Produto
+                                    </span>
+
+                                    <span class="pedido-quantidade"
+                                          th:text="|Quantidade: ${item.quantidade}|">
+                                        Quantidade: 1
+                                    </span>
+                                </div>
+
+                                <strong th:text="${#numbers.formatCurrency(item.preco * item.quantidade)}">
+                                    R$ 0,00
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                        <div class="pedido-footer">
+                            <span class="text-muted">
+                                <i class="bi bi-box-seam me-1"></i>
+                                Detalhes da compra
+                            </span>
+
+                            <a th:href="@{/checkout/pagamento/{id}(id=${pedido.id})}"
+                               class="pedido-link">
+                                Ver pedido
+                                <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+
+                    </article>
+
+                </div>
+
+            </section>
 
         </div>
 
     </div>
-
 </main>
 
 <div th:replace="~{includes/footer :: footer}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

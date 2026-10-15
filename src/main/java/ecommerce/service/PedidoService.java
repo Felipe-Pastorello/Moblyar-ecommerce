@@ -9,12 +9,14 @@ import ecommerce.entity.StatusPedido;
 import ecommerce.entity.Usuario;
 import ecommerce.repository.PedidoRepository;
 import ecommerce.repository.UsuarioRepository;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class PedidoService {
@@ -22,15 +24,18 @@ public class PedidoService {
     private final PedidoRepository pedidoRepository;
     private final UsuarioRepository usuarioRepository;
     private final CarrinhoService carrinhoService;
+    private final AsaasService asaasService;
 
     public PedidoService(
             PedidoRepository pedidoRepository,
             UsuarioRepository usuarioRepository,
-            CarrinhoService carrinhoService) {
+            CarrinhoService carrinhoService,
+            AsaasService asaasService) {
 
         this.pedidoRepository = pedidoRepository;
         this.usuarioRepository = usuarioRepository;
         this.carrinhoService = carrinhoService;
+        this.asaasService = asaasService;
     }
 
     @Transactional
@@ -92,5 +97,47 @@ public class PedidoService {
         pedido.setTotal(total);
 
         return pedidoRepository.save(pedido);
+    }
+
+    @Transactional
+    public String obterLinkPagamento(Long pedidoId, String email) {
+
+        Pedidos pedido = pedidoRepository.findById(pedidoId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Pedido não encontrado."
+                ));
+
+        if (!pedido.getUsuario().getEmail().equals(email)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+
+        if (pedido.getAsaasCheckoutId() != null
+                && !pedido.getAsaasCheckoutId().isBlank()) {
+            return "https://sandbox.asaas.com/checkoutSession/show?id="
+                    + pedido.getAsaasCheckoutId();
+        }
+
+        if (pedido.getStatus() != StatusPedido.PENDENTE) {
+            throw new IllegalStateException(
+                    "Não é possível iniciar o pagamento deste pedido."
+            );
+        }
+
+        String checkoutId = asaasService.criarCheckout(pedido);
+
+        pedido.setAsaasCheckoutId(checkoutId);
+        pedidoRepository.save(pedido);
+
+        return "https://sandbox.asaas.com/checkoutSession/show?id=" + checkoutId;
+    }
+
+    @Transactional(readOnly = true)
+    public List<Pedidos> buscarPedidosPorUsuario(String email) {
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new RuntimeException("Usuário não encontrado.")
+                );
+
+        return pedidoRepository.findByUsuarioOrderByDataDesc(usuario);
     }
 }
