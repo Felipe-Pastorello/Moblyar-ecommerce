@@ -9,6 +9,5 @@ public class EcommerceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(EcommerceApplication.class, args);
 	}
-	/*http://localhost:8080/produtos*/
-	/*http://localhost:8080/categorias*/
+	/*ngrok http 8080*/
 }

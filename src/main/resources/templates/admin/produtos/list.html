@@ -26,20 +26,21 @@
                 </button>
             </form>
 
-            <button class="btn btn-red mb-4"
-                    type="button"
-                    data-bs-toggle="modal"
-                    data-bs-target="#productModal"
-                    onclick="novoProduto()">
+            <button class="btn btn-red mb-4" type="button" data-bs-toggle="modal" data-bs-target="#productModal" onclick="novoProduto()">
                 <i class="bi bi-plus-circle me-2"></i>Novo Produto
             </button>
         </div>
     </div>
 
-    <div class="mb-4">
-        <a th:href="@{/admin/categorias}"
-           class="btn btn-light border border-2">
-            Editar Categorias
+    <div class="d-flex flex-wrap gap-2 mb-4">
+        <a th:href="@{/admin/produtos}" class="btn btn-red">
+            <i class="bi bi-box-seam me-1"></i> Produtos
+        </a>
+        <a th:href="@{/admin/categorias}" class="btn btn-light border">
+            <i class="bi bi-folder me-1"></i> Categorias
+        </a>
+        <a th:href="@{/admin/pedidos}" class="btn btn-light border">
+            <i class="bi bi-receipt me-1"></i> Pedidos
         </a>
     </div>
 
@@ -60,27 +61,17 @@
 
         <div class="d-flex flex-wrap d-lg-grid">
 
-            <div class="col-12 col-sm-6 col-lg-12 px-2 px-lg-0 mb-3 mb-lg-0"
-                 th:each="p : ${produtos}">
-
-                <div class="card border-0 rounded-0 card-produtos"
-                     th:style="${p.status == 'INATIVO'} ? 'opacity:0.5' : 'opacity:1'">
+            <div class="col-12 col-sm-6 col-lg-12 px-2 px-lg-0 mb-3 mb-lg-0" th:each="p : ${produtos}">
+                <div class="card border-0 rounded-0 card-produtos" th:style="${p.status == 'INATIVO'} ? 'opacity:0.5' : 'opacity:1'">
 
                     <div class="card-body border-top border-bottom d-flex justify-content-around gap-2 gap-lg-0">
 
-                        <div th:if="${!#lists.isEmpty(p.imagens)}"
-                             class="col-12 col-lg-2 offset-lg-1">
+                        <div th:if="${!#lists.isEmpty(p.imagens)}" class="col-12 col-lg-2 offset-lg-1">
 
-                            <img th:src="@{'/uploads/' + ${p.imagens[0].nomeArquivo}}"
-                                 width="100"
-                                 height="100"
-                                 class="rounded"
-                                 alt="Imagem do produto"
-                                 style="object-fit:cover; max-height:64px; max-width:64px;">
+                            <img th:src="@{'/uploads/' + ${p.imagens[0].nomeArquivo}}" width="100" height="100" class="rounded" alt="Imagem do produto" style="object-fit:cover; max-height:64px; max-width:64px;">
                         </div>
 
-                        <h5 class="card-title col-12 col-lg-2 d-flex align-items-center mb-0 pe-2"
-                            th:text="${p.nome}">
+                        <h5 class="card-title col-12 col-lg-2 d-flex align-items-center mb-0 pe-2" th:text="${p.nome}">
                         </h5>
 
                         <p class="col-12 col-lg-2 d-flex align-items-center mb-0 pe-2">
@@ -94,30 +85,15 @@
                         </p>
 
                         <div class="col-12 col-lg-3 d-flex align-items-center justify-content-around">
-
-                            <button type="button"
-                                    class="btn btn-light btn-editar"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#productModal"
-                                    th:attr="data-id=${p.id},
-                                             data-name=${p.nome},
-                                             data-description=${p.descricao},
-                                             data-price=${p.preco},
-                                             data-stock=${p.estoque}">
-
+                            <button type="button" class="btn btn-light btn-editar" data-bs-toggle="modal" data-bs-target="#productModal" th:attr="data-id=${p.id}, data-name=${p.nome}, data-description=${p.descricao}, data-price=${p.preco}, data-stock=${p.estoque}">
                                 <i class="bi bi-pen"></i>
                             </button>
 
-                            <a th:href="@{/admin/produtos/delete/{id}(id=${p.id})}"
-                               class="btn btn-light btn-excluir">
-
+                            <!--<a th:href="@{/admin/produtos/delete/{id}(id=${p.id})}" class="btn btn-light btn-excluir">
                                 <i class="bi bi-trash text-red"></i>
-                            </a>
+                            </a>-->
 
-                            <a th:href="@{/admin/produtos/status/{id}(id=${p.id})}"
-                               th:classappend="${p.status == 'ATIVO'} ? 'btn-danger' : 'btn-success'"
-                               class="btn btn-sm">
-
+                            <a th:href="@{/admin/produtos/status/{id}(id=${p.id})}" th:classappend="${p.status == 'ATIVO'} ? 'btn-danger' : 'btn-success'" class="btn btn-sm">
                                 <span th:text="${p.status == 'ATIVO'} ? 'Inativar' : 'Ativar'"></span>
                             </a>
 
@@ -130,33 +106,19 @@
 
     <nav class="mt-4" th:if="${paginaProdutos.totalPages > 1}">
         <ul class="pagination justify-content-center">
-
-            <li class="page-item"
-                th:classappend="${paginaProdutos.first} ? 'disabled'">
-
-                <a class="page-link"
-                   th:href="@{/admin/produtos(pagina=${paginaProdutos.number - 1})}">
-
+            <li class="page-item" th:classappend="${paginaProdutos.first} ? 'disabled'">
+                <a class="page-link" th:href="@{/admin/produtos(pagina=${paginaProdutos.number - 1})}">
                     <i class="bi bi-chevron-left"></i>
                 </a>
             </li>
 
-            <li class="page-item"
-                th:each="i : ${#numbers.sequence(0, paginaProdutos.totalPages - 1)}"
-                th:classappend="${i == paginaProdutos.number} ? 'active'">
-
-                <a class="page-link"
-                   th:text="${i + 1}"
-                   th:href="@{/admin/produtos(pagina=${i})}">
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, paginaProdutos.totalPages - 1)}" th:classappend="${i == paginaProdutos.number} ? 'active'">
+                <a class="page-link" th:text="${i + 1}" th:href="@{/admin/produtos(pagina=${i})}">
                 </a>
             </li>
 
-            <li class="page-item"
-                th:classappend="${paginaProdutos.last} ? 'disabled'">
-
-                <a class="page-link"
-                   th:href="@{/admin/produtos(pagina=${paginaProdutos.number + 1})}">
-
+            <li class="page-item" th:classappend="${paginaProdutos.last} ? 'disabled'">
+                <a class="page-link" th:href="@{/admin/produtos(pagina=${paginaProdutos.number + 1})}">
                     <i class="bi bi-chevron-right"></i>
                 </a>
             </li>
@@ -167,31 +129,16 @@
     <div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-
-                <form id="formProduto"
-                      th:action="@{/admin/produtos/save}"
-                      method="post"
-                      enctype="multipart/form-data">
-
+                <form id="formProduto" th:action="@{/admin/produtos/save}" method="post" enctype="multipart/form-data">
                     <div class="modal-header">
                         <h5 class="modal-title">Produto</h5>
-
-                        <button type="button"
-                                class="btn-close"
-                                data-bs-dismiss="modal"
-                                aria-label="Fechar">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar">
                         </button>
                     </div>
 
                     <div class="modal-body">
-
                         <div class="mb-3">
-                            <input type="file"
-                                   name="arquivos"
-                                   id="arquivos"
-                                   multiple
-                                   accept="image/*"
-                                   class="form-control">
+                            <input type="file" name="arquivos" id="arquivos" multiple accept="image/*" class="form-control">
 
                             <div id="imagensExistentes"></div>
 
@@ -209,11 +156,7 @@
                         <div class="mb-3">
                             <label for="name" class="form-label">Nome</label>
 
-                            <input type="text"
-                                   name="nome"
-                                   id="name"
-                                   class="form-control"
-                                   required>
+                            <input type="text" name="nome" id="name" class="form-control" required>
 
                             <small id="erroNome" class="text-danger"></small>
                         </div>
@@ -221,16 +164,9 @@
                         <div class="mb-3">
                             <label for="categorias" class="form-label">Categorias</label>
 
-                            <select name="categoriaIds"
-                                    id="categorias"
-                                    multiple
-                                    class="form-select"
-                                    size="5">
+                            <select name="categoriaIds" id="categorias" multiple class="form-select" size="5">
 
-                                <option th:each="c : ${categorias}"
-                                        th:value="${c.id}"
-                                        th:text="${c.nome}"
-                                        th:selected="${produto != null and produto.categorias.contains(c)}">
+                                <option th:each="c : ${categorias}" th:value="${c.id}" th:text="${c.nome}" th:selected="${produto != null and produto.categorias.contains(c)}">
                                 </option>
 
                             </select>
@@ -243,11 +179,7 @@
                         <div class="mb-3">
                             <label for="description" class="form-label">Descrição</label>
 
-                            <input type="text"
-                                   name="descricao"
-                                   id="description"
-                                   class="form-control"
-                                   required>
+                            <input type="text" name="descricao" id="description" class="form-control" required>
 
                             <small id="erroDescricao" class="text-danger"></small>
                         </div>
@@ -255,13 +187,7 @@
                         <div class="mb-3">
                             <label for="price" class="form-label">Preço</label>
 
-                            <input type="number"
-                                   name="preco"
-                                   id="price"
-                                   class="form-control"
-                                   min="0.01"
-                                   step="0.01"
-                                   required>
+                            <input type="number" name="preco" id="price" class="form-control" min="0.01" step="0.01" required>
 
                             <small id="erroPreco" class="text-danger"></small>
                         </div>
@@ -269,24 +195,14 @@
                         <div class="mb-3">
                             <label for="stock" class="form-label">Estoque</label>
 
-                            <input type="number"
-                                   name="estoque"
-                                   id="stock"
-                                   class="form-control"
-                                   min="0"
-                                   step="1"
-                                   required>
+                            <input type="number" name="estoque" id="stock" class="form-control" min="0" step="1" required>
 
                             <small id="erroEstoque" class="text-danger"></small>
                         </div>
-
                     </div>
 
                     <div class="modal-footer">
-                        <button type="submit"
-                                id="btnSalvar"
-                                class="btn btn-success">
-
+                        <button type="submit" id="btnSalvar" class="btn btn-success">
                             Salvar
                         </button>
                     </div>

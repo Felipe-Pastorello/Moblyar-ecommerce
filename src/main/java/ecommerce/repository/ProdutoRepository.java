@@ -8,6 +8,8 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.repository.query.Param;
 
 public interface ProdutoRepository extends JpaRepository<Produto, Long> {
     List<Produto> findByStatus(String status);
@@ -65,5 +67,32 @@ WHERE p.categorias IS EMPTY""")
     List<Produto> findRelacionados(
             @Param("categoriaId") Long categoriaId,
             @Param("produtoId") Long produtoId
+    );
+    @Modifying
+    @Query(value = """
+    UPDATE produto
+    SET status = CASE
+        WHEN estoque = :quantidade THEN 'INATIVO'
+        ELSE status
+    END,
+    estoque = estoque - :quantidade
+    WHERE id = :produtoId
+      AND status = 'ATIVO'
+      AND estoque >= :quantidade
+    """, nativeQuery = true)
+    int reservarEstoque(
+            @Param("produtoId") Long produtoId,
+            @Param("quantidade") int quantidade
+    );
+
+    @Modifying
+    @Query(value = """
+    UPDATE produto
+    SET estoque = estoque + :quantidade
+    WHERE id = :produtoId
+    """, nativeQuery = true)
+    int devolverEstoque(
+            @Param("produtoId") Long produtoId,
+            @Param("quantidade") int quantidade
     );
 }

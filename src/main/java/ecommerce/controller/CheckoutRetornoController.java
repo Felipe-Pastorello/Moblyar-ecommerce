@@ -10,7 +10,7 @@ public class CheckoutRetornoController {
 
     @GetMapping("/sucesso")
     public String sucesso() {
-        return "redirect:/meus-pedidos";
+        return "redirect:/perfil";
     }
 
     @GetMapping("/cancelado")

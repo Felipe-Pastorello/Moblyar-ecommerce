@@ -7,6 +7,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link rel="stylesheet" th:href="@{/css/perfil.css}">
+    <link rel="stylesheet" th:href="@{/css/GerenciarPedidos.css}">
+    <link rel="stylesheet" th:href="@{/css/body.css}">
 </head>
 
 <body>
@@ -16,42 +18,44 @@
 <main class="conta-main">
     <div class="container conta-container">
 
+        <div th:if="${sucesso}" class="alert alert-success" role="alert" th:text="${sucesso}">
+        </div>
+        <div th:if="${erro}" class="alert alert-danger" role="alert" th:text="${erro}">
+        </div>
+
         <!-- Cabeçalho -->
         <div class="conta-heading">
             <h1>Minha Conta</h1>
             <p>Gerencie seu perfil e acompanhe seus pedidos</p>
+            <form th:action="@{/logout}" method="post" class="mt-3">
+                <button type="submit" class="btn btn-outline-danger btn-sm">
+                    <i class="bi bi-box-arrow-right me-1"></i>
+                    Sair da conta
+                </button>
+            </form>
         </div>
 
         <!-- Navegação -->
         <ul class="nav conta-tabs" id="contaTabs" role="tablist">
 
             <li class="nav-item" role="presentation">
-                <button class="nav-link active"
-                        id="perfil-tab"
-                        data-bs-toggle="tab"
-                        data-bs-target="#perfil"
-                        type="button"
-                        role="tab"
-                        aria-controls="perfil"
-                        aria-selected="true">
-
+                <button class="nav-link active" id="perfil-tab" data-bs-toggle="tab" data-bs-target="#perfil" type="button" role="tab" aria-controls="perfil" aria-selected="true">
                     <i class="bi bi-person"></i>
                     <span>Perfil</span>
                 </button>
             </li>
 
             <li class="nav-item" role="presentation">
-                <button class="nav-link"
-                        id="pedidos-tab"
-                        data-bs-toggle="tab"
-                        data-bs-target="#pedidos"
-                        type="button"
-                        role="tab"
-                        aria-controls="pedidos"
-                        aria-selected="false">
-
+                <button class="nav-link" id="pedidos-tab" data-bs-toggle="tab" data-bs-target="#pedidos" type="button" role="tab" aria-controls="pedidos" aria-selected="false">
                     <i class="bi bi-box-seam"></i>
                     <span>Pedidos</span>
+                </button>
+            </li>
+
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="enderecos-tab" data-bs-toggle="tab" data-bs-target="#enderecos" type="button" role="tab" aria-controls="enderecos" aria-selected="false">
+                    <i class="bi bi-geo-alt"></i>
+                    <span>Endereços</span>
                 </button>
             </li>
 
@@ -61,101 +65,76 @@
         <div class="tab-content conta-tab-content">
 
             <!-- ABA: PERFIL -->
-            <section class="tab-pane fade show active"
-                     id="perfil"
-                     role="tabpanel"
-                     aria-labelledby="perfil-tab"
-                     tabindex="0">
-
+            <section class="tab-pane fade show active" id="perfil" role="tabpanel" aria-labelledby="perfil-tab" tabindex="0">
                 <div class="conta-card">
-
                     <div class="conta-card-header">
                         <div>
                             <h2>Dados da conta</h2>
                             <p>Confira suas informações pessoais</p>
                         </div>
-
                         <div class="conta-avatar">
                             <i class="bi bi-person"></i>
                         </div>
                     </div>
+                    <div class="conta-info-grid"></div>
+                    <div class="conta-editar mt-4">
+                        <h3 class="h5 mb-3">Editar dados da conta</h3>
 
-                    <div class="conta-info-grid">
-
-                        <div class="conta-info-item">
-                            <span class="conta-info-label">Nome completo</span>
-                            <span class="conta-info-value"
-                                  th:text="${usuario.nome}">Nome do usuário</span>
-                        </div>
-
-                        <div class="conta-info-item">
-                            <span class="conta-info-label">E-mail</span>
-                            <span class="conta-info-value"
-                                  th:text="${usuario.email}">email@exemplo.com</span>
-                        </div>
-
-                        <div class="conta-info-item">
-                            <span class="conta-info-label">Identificação da conta</span>
-                            <span class="conta-info-value"
-                                  th:text="${usuario.id}">1</span>
-                        </div>
-
-                        <div class="conta-info-item">
-                            <span class="conta-info-label">Status da sessão</span>
-                            <span class="conta-status">
-                                <i class="bi bi-check-circle-fill"></i>
-                                Conectado
-                            </span>
-                        </div>
-
+                        <form th:action="@{/perfil/editar}" method="post">
+                            <div class="mb-3">
+                                <label for="nome" class="form-label">Nome completo</label>
+                                <input type="text" id="nome" name="nome" class="form-control" th:value="${usuario.nome}" maxlength="150" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">E-mail</label>
+                                <input type="email" id="email" name="email" class="form-control" th:value="${usuario.email}" maxlength="254" required>
+                            </div>
+                            <hr>
+                            <p class="text-muted small">
+                                Para alterar o e-mail ou a senha, informe sua senha atual.
+                                Deixe os campos de senha nova vazios se não quiser alterá-la.
+                            </p>
+                            <div class="mb-3">
+                                <label for="senhaAtual" class="form-label">Senha atual</label>
+                                <input type="password" id="senhaAtual" name="senhaAtual" class="form-control" autocomplete="current-password">
+                            </div>
+                            <div class="mb-3">
+                                <label for="novaSenha" class="form-label">Nova senha</label>
+                                <input type="password" id="novaSenha" name="novaSenha" class="form-control" autocomplete="new-password">
+                            </div>
+                            <button type="submit" class="btn btn-red">
+                                Salvar alterações
+                            </button>
+                        </form>
                     </div>
-
                     <div class="conta-card-footer">
                         <span class="text-muted">
                             <i class="bi bi-shield-check me-1"></i>
                             Informações da sua conta Moblyar
                         </span>
                     </div>
-
                 </div>
-
             </section>
 
             <!-- ABA: PEDIDOS -->
-            <section class="tab-pane fade"
-                     id="pedidos"
-                     role="tabpanel"
-                     aria-labelledby="pedidos-tab"
-                     tabindex="0">
-
+            <section class="tab-pane fade" id="pedidos" role="tabpanel" aria-labelledby="pedidos-tab" tabindex="0">
                 <!-- Estado vazio -->
-                <div class="conta-card conta-empty"
-                     th:if="${pedidos == null or #lists.isEmpty(pedidos)}">
-
+                <div class="conta-card conta-empty" th:if="${pedidos == null or #lists.isEmpty(pedidos)}">
                     <i class="bi bi-bag-x"></i>
                     <h2>Nenhum pedido encontrado</h2>
                     <p>Quando você fizer uma compra, seus pedidos aparecerão aqui.</p>
-
                     <a th:href="@{/}" class="btn btn-red">
                         Explorar produtos
                     </a>
-
                 </div>
-
                 <!-- Lista de pedidos -->
-                <div th:if="${pedidos != null and !#lists.isEmpty(pedidos)}"
-                     class="conta-pedidos">
-
-                    <article class="conta-card pedido-card"
-                             th:each="pedido : ${pedidos}">
-
+                <div th:if="${pedidos != null and !#lists.isEmpty(pedidos)}" class="conta-pedidos">
+                    <article class="conta-card pedido-card" th:each="pedido : ${pedidos}">
                         <div class="pedido-header">
-
                             <div>
                                 <h2 th:text="|Pedido #${pedido.id}|">
                                     Pedido #1
                                 </h2>
-
                                 <p class="pedido-data">
                                     <i class="bi bi-calendar3"></i>
                                     <span th:text="${#temporals.format(pedido.data, 'dd/MM/yyyy')}">
@@ -163,72 +142,107 @@
                                     </span>
                                 </p>
                             </div>
-
                             <div class="pedido-resumo">
                                 <span class="pedido-status"
-                                      th:text="${pedido.status}">
+                                      th:classappend="${' status-' + #strings.toLowerCase(pedido.status.name())}"
+                                      th:text="${pedido.status.name()}">
                                     PENDENTE
                                 </span>
-
                                 <strong th:text="${#numbers.formatCurrency(pedido.total)}">
                                     R$ 0,00
                                 </strong>
                             </div>
-
                         </div>
-
                         <div class="pedido-itens">
-
-                            <div class="pedido-item"
-                                 th:each="item : ${pedido.items}">
-
+                            <div class="pedido-item" th:each="item : ${pedido.items}">
                                 <div>
                                     <span class="pedido-produto"
                                           th:text="${item.produto.nome}">
                                         Produto
                                     </span>
-
                                     <span class="pedido-quantidade"
                                           th:text="|Quantidade: ${item.quantidade}|">
                                         Quantidade: 1
                                     </span>
                                 </div>
-
                                 <strong th:text="${#numbers.formatCurrency(item.preco * item.quantidade)}">
                                     R$ 0,00
                                 </strong>
-
                             </div>
-
                         </div>
-
                         <div class="pedido-footer">
                             <span class="text-muted">
                                 <i class="bi bi-box-seam me-1"></i>
                                 Detalhes da compra
                             </span>
-
                             <a th:href="@{/checkout/pagamento/{id}(id=${pedido.id})}"
                                class="pedido-link">
                                 Ver pedido
                                 <i class="bi bi-arrow-right"></i>
                             </a>
                         </div>
-
                     </article>
-
                 </div>
-
             </section>
 
+            <!-- ABA: ENDEREÇOS -->
+            <section class="tab-pane fade" id="enderecos" role="tabpanel" aria-labelledby="enderecos-tab" tabindex="0">
+                <div class="conta-card">
+                    <div class="d-flex justify-content-between align-items-center gap-3 mb-4">
+                        <div>
+                            <h2 class="h5 mb-1">Meus endereços</h2>
+                            <p class="text-muted small mb-0">
+                                Gerencie os endereços associados à sua conta.
+                            </p>
+                        </div>
+                        <a th:href="@{/perfil/enderecos/novo}" class="btn btn-red btn-sm flex-shrink-0">
+                            <i class="bi bi-plus-lg me-1"></i>
+                            Adicionar
+                        </a>
+                    </div>
+                    <div th:if="${enderecos == null or #lists.isEmpty(enderecos)}"
+                         class="conta-empty">
+                        <i class="bi bi-geo-alt"></i>
+                        <h2>Nenhum endereço cadastrado</h2>
+                        <p>Adicione um endereço para facilitar suas compras.</p>
+                    </div>
+                    <div th:if="${enderecos != null and !#lists.isEmpty(enderecos)}" class="enderecos-lista">
+                        <article class="endereco-item" th:each="endereco : ${enderecos}">
+                            <div class="endereco-dados">
+                                <h3 th:text="${endereco.rua}">Rua</h3>
+                                <p th:text="|${endereco.cidade} - ${endereco.estado}|">
+                                    Cidade - Estado
+                                </p>
+                                <span class="text-muted small" th:text="|CEP: ${endereco.cep}|">
+                        CEP: 00000-000
+                    </span>
+                            </div>
+                            <div class="endereco-acoes">
+                                <a th:href="@{/perfil/enderecos/{id}/editar(id=${endereco.id})}"
+                                   class="btn btn-outline-secondary btn-sm">
+                                    <i class="bi bi-pencil me-1"></i>
+                                    Editar
+                                </a>
+                                <form th:action="@{/perfil/enderecos/{id}/excluir(id=${endereco.id})}" method="post" onsubmit="return confirm('Deseja realmente excluir este endereço da sua conta?');">
+                                    <button type="submit"
+                                            class="btn btn-outline-danger btn-sm">
+                                        <i class="bi bi-trash me-1"></i>
+                                        Excluir
+                                    </button>
+                                </form>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </section>
         </div>
-
     </div>
 </main>
 
 <div th:replace="~{includes/footer :: footer}"></div>
-
+<div th:replace="~{includes/carrinho :: carrinho}"></div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
+<script th:src="@{/js/carrinho.js}"></script>
 </body>
 </html>

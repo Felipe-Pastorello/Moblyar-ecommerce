@@ -119,7 +119,8 @@ public class SecurityConfig {
                                 "/comprar/**",
                                 "/pedido/**",
                                 "/checkout/**",
-                                "/perfil"
+                                "/perfil",
+                                "/perfil/**"
                         ).authenticated()
 
                         .anyRequest().permitAll()

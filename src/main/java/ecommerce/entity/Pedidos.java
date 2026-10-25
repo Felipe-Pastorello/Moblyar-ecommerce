@@ -42,4 +42,7 @@ public class Pedidos {
     private String asaasCheckoutId;
 
     private String asaasPaymentId;
+
+    @Column(nullable = false)
+    private boolean estoqueDevolvido = false;
 }
