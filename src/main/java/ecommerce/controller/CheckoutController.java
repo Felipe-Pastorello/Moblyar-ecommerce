@@ -6,6 +6,7 @@ import ecommerce.entity.Usuario;
 import ecommerce.service.CarrinhoService;
 import ecommerce.service.PedidoService;
 import ecommerce.service.UsuarioService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +19,8 @@ import ecommerce.repository.PedidoRepository;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.math.BigDecimal;
 
 @Controller
 public class CheckoutController {
@@ -65,13 +68,23 @@ public class CheckoutController {
     }
 
     @PostMapping("/checkout/finalizar")
-    public String finalizar(@RequestParam Long enderecoId, Authentication authentication, RedirectAttributes redirectAttributes) {
+    public String finalizar(
+            @RequestParam Long enderecoId,
+            @RequestParam(defaultValue = "0") BigDecimal freteValor,
+            @RequestParam(required = false) String freteServico,
+            Authentication authentication,
+            RedirectAttributes redirectAttributes,
+            HttpSession session) {
 
         try {
             Pedidos pedido = pedidoService.criarPedido(
                     authentication.getName(),
                     enderecoId
             );
+
+            session.setAttribute("freteValor", freteValor);
+            session.setAttribute("freteServico", freteServico);
+            session.setAttribute("fretePedidoId", pedido.getId());
 
             return "redirect:/checkout/pagamento/" + pedido.getId();
 
@@ -86,7 +99,11 @@ public class CheckoutController {
     }
 
     @GetMapping("/checkout/pagamento/{id}")
-    public String pagamento(@PathVariable Long id, Authentication authentication, Model model) {
+    public String pagamento(
+            @PathVariable Long id,
+            Authentication authentication,
+            Model model,
+            HttpSession session) {
 
         Pedidos pedido = pedidoRepository.findById(id)
                 .orElseThrow(() ->
@@ -96,7 +113,6 @@ public class CheckoutController {
                         )
                 );
 
-        // Impede que um usuário consulte o pedido de outra pessoa.
         if (!pedido.getUsuario().getEmail()
                 .equals(authentication.getName())) {
             throw new org.springframework.web.server.ResponseStatusException(
@@ -104,17 +120,49 @@ public class CheckoutController {
             );
         }
 
+        BigDecimal freteValor = BigDecimal.ZERO;
+        String freteServico = "";
+
+        if (id.equals(session.getAttribute("fretePedidoId"))) {
+            freteValor = (BigDecimal) session.getAttribute("freteValor");
+
+            freteServico = (String) session.getAttribute("freteServico");
+        }
+
         model.addAttribute("pedido", pedido);
+        model.addAttribute("freteValor", freteValor);
+        model.addAttribute("freteServico", freteServico);
 
         return "checkout/pagamento";
     }
 
     @PostMapping("/checkout/pagamento/{id}/iniciar")
-    public String iniciarPagamento(@PathVariable Long id, Authentication authentication, RedirectAttributes redirectAttributes) {
+    public String iniciarPagamento(
+            @PathVariable Long id,
+            Authentication authentication,
+            RedirectAttributes redirectAttributes,
+            HttpSession session) {
 
         try {
+            BigDecimal freteValor = BigDecimal.ZERO;
+            String freteServico = "";
+
+            if (id.equals(session.getAttribute("fretePedidoId"))) {
+                Object valorSessao = session.getAttribute("freteValor");
+
+                if (valorSessao instanceof BigDecimal) {
+                    freteValor = (BigDecimal) valorSessao;
+                }
+
+                freteServico = (String) session.getAttribute("freteServico");
+            }
+
             String link = pedidoService.obterLinkPagamento(
-                    id, authentication.getName());
+                    id,
+                    authentication.getName(),
+                    freteValor,
+                    freteServico
+            );
 
             return "redirect:" + link;
 

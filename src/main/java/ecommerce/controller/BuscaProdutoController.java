@@ -1,4 +1,3 @@
-
 package ecommerce.controller;
 
 import ecommerce.entity.Produto;
@@ -17,9 +16,7 @@ public class BuscaProdutoController {
     private final ProdutoService service;
     private final CategoriaService categoriaService;
 
-    public BuscaProdutoController(
-            ProdutoService service,
-            CategoriaService categoriaService) {
+    public BuscaProdutoController(ProdutoService service, CategoriaService categoriaService) {
         this.service = service;
         this.categoriaService = categoriaService;
     }

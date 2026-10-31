@@ -121,9 +121,31 @@
                         <button type="button" class="btn btn-light border">
                             Comprar agora
                         </button>
+                        <div id="frete-container"></div>
+
+                        <script src="https://cepcerto.com/widget_frete/" data-public-key="pk_live_c48679a4e3e2026aa4e6aa1980cae21eb22c5f1601f6223f">
+                        </script>
+                        <script>
+                            document.addEventListener("DOMContentLoaded", () => {
+                                const observer = new MutationObserver(() => {
+                                    const frete = document.querySelector(".cepcerto-frete");
+                                    const container = document.querySelector("#frete-container");
+
+                                    if (frete && container) {
+                                        container.appendChild(frete);
+                                        observer.disconnect();
+                                    }
+                                });
+
+                                observer.observe(document.body, {
+                                    childList: true,
+                                    subtree: true
+                                });
+                            });
+                        </script>
                     </div>
-                    <hr class="my-4">
-                    <div>
+
+                    <!--<div>
                         <h5 class="fw-bold mb-3">
                             Por que comprar de nós?
                         </h5>
@@ -145,37 +167,10 @@
                                 Pagamento seguro
                             </li>
                         </ul>
-                    </div>
+                    </div>-->
                 </div>
             </div>
         </div>
-        <section class="produtos-relacionados mt-5 pt-4">
-            <h2 class="section-title mb-4">
-                Produtos Relacionados
-            </h2>
-            <div class="row g-3">
-                <div class="col-12 col-sm-6 col-lg-3" th:each="relacionado : ${produtosRelacionados}">
-                    <a th:href="@{/produtos/{id}(id=${relacionado.id})}" class="text-decoration-none">
-                        <div class="card produto-card h-100 border-0">
-                            <div class="produto-card-imagem">
-                                <img th:if="${!#lists.isEmpty(relacionado.imagens)}" th:src="@{'/uploads/' + ${relacionado.imagens[0].nomeArquivo}}" th:alt="${relacionado.nome}">
-                            </div>
-                            <div class="card-body">
-                                <h5 class="card-title" th:text="${relacionado.nome}">
-                                    Produto relacionado
-                                </h5>
-                                <p class="produto-card-preco">
-                                    R$
-                                    <span th:text="${#numbers.formatDecimal(relacionado.preco, 1, 2)}">
-                                        549.99
-                                    </span>
-                                </p>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </section>
     </div>
 </main>
 <div th:replace="~{includes/footer :: footer}"></div>

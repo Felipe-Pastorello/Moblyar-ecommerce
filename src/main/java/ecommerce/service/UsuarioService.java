@@ -42,12 +42,7 @@ public class UsuarioService implements UserDetailsService {
     }
 
     @Transactional
-    public boolean atualizarDados(
-            String emailAtual,
-            String nome,
-            String novoEmail,
-            String senhaAtual,
-            String novaSenha) {
+    public boolean atualizarDados(String emailAtual, String nome, String novoEmail, String senhaAtual, String novaSenha) {
 
         Usuario usuario = repository.findByEmail(emailAtual)
                 .orElseThrow(() ->
@@ -104,9 +99,7 @@ public class UsuarioService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email)
-            throws UsernameNotFoundException {
-
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Usuario usuario = repository.findByEmail(email)
                 .orElseThrow(() ->
                         new UsernameNotFoundException(

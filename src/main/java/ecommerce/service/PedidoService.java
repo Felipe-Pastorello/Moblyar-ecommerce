@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.util.StringUtils;
 import ecommerce.repository.ProdutoRepository;
+import java.math.BigDecimal;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -126,7 +127,11 @@ public class PedidoService {
     }
 
     @Transactional
-    public String obterLinkPagamento(Long pedidoId, String email) {
+    public String obterLinkPagamento(
+            Long pedidoId,
+            String email,
+            BigDecimal freteValor,
+            String freteServico) {
 
         Pedidos pedido = pedidoRepository.findById(pedidoId)
                 .orElseThrow(() -> new ResponseStatusException(
@@ -149,7 +154,11 @@ public class PedidoService {
             );
         }
 
-        String checkoutId = asaasService.criarCheckout(pedido);
+        String checkoutId = asaasService.criarCheckout(
+                pedido,
+                freteValor,
+                freteServico
+        );
 
         pedido.setAsaasCheckoutId(checkoutId);
         pedidoRepository.save(pedido);

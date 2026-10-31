@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
 
 import java.util.List;
 import java.util.Map;
@@ -37,16 +40,30 @@ public class AsaasService {
         this.expiredUrl = expiredUrl;
     }
 
-    public String criarCheckout(Pedidos pedido) {
+    public String criarCheckout(
+            Pedidos pedido,
+            BigDecimal freteValor,
+            String freteServico) {
 
-        List<Map<String, Object>> itens = pedido.getItems()
-                .stream()
-                .map(item -> Map.<String, Object>of(
-                        "name", item.getProduto().getNome(),
-                        "quantity", item.getQuantidade(),
-                        "value", item.getPreco()
-                ))
-                .toList();
+        List<Map<String, Object>> itens = new ArrayList<>(
+                pedido.getItems()
+                        .stream()
+                        .map(item -> Map.<String, Object>of(
+                                "name", item.getProduto().getNome(),
+                                "quantity", item.getQuantidade(),
+                                "value", item.getPreco()
+                        ))
+                        .toList()
+        );
+
+        if (freteValor != null && freteValor.compareTo(BigDecimal.ZERO) > 0) {
+            itens.add(Map.of(
+                    "name", "Frete - " +
+                            (freteServico != null ? freteServico : "Entrega"),
+                    "quantity", 1,
+                    "value", freteValor.setScale(2, RoundingMode.HALF_UP)
+            ));
+        }
 
         Map<String, Object> callback = Map.of(
                 "successUrl", successUrl,

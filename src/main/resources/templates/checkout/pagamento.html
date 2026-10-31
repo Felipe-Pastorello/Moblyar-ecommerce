@@ -3,14 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Pagamento - Moblyar</title>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-          rel="stylesheet">
-
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 </head>
 
 <body class="bg-light">
@@ -119,15 +114,29 @@
         </div>
 
         <div class="col-lg-4">
-
             <div class="card border-0 shadow-sm">
                 <div class="card-body p-4">
 
                     <h4 class="fw-bold mb-4">Resumo do pedido</h4>
 
                     <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Produtos</span>
+                        <span th:text="${'R$ ' + #numbers.formatDecimal(pedido.total, 2, 2)}">
+                    R$ 0,00
+                </span>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-3">
                         <span class="text-muted">Frete</span>
-                        <span>Grátis</span>
+                        <span th:text="${'R$ ' + #numbers.formatDecimal(freteValor, 2, 2)}">
+                    R$ 0,00
+                </span>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-3"
+                         th:if="${freteServico != null and !freteServico.isEmpty()}">
+                        <span class="text-muted">Transportadora</span>
+                        <span th:text="${freteServico}">LOGGI</span>
                     </div>
 
                     <hr>
@@ -136,7 +145,7 @@
                         <strong class="fs-5">Total</strong>
 
                         <strong class="fs-4"
-                                th:text="${'R$ ' + #numbers.formatDecimal(pedido.total, 2, 2)}">
+                                th:text="${'R$ ' + #numbers.formatDecimal(pedido.total + freteValor, 2, 2)}">
                         </strong>
                     </div>
 
@@ -153,12 +162,11 @@
                     </form>
 
                     <small class="text-muted d-block mt-3">
-                        A etapa de pagamento será disponibilizada após a integração com o provedor.
+                        O pagamento será processado pelo provedor de pagamento.
                     </small>
 
                 </div>
             </div>
-
         </div>
 
     </div>
