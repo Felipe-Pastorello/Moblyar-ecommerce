@@ -39,6 +39,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (!cepInput || !widgetForm || !resultados) return;
 
+        if (widget.dataset.configurado === "true") return;
+
+        widget.dataset.configurado = "true";
+
         function calcularCep(cep) {
             const cepLimpo = cep.replace(/\D/g, "");
 
@@ -118,20 +122,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (!widget) return;
 
-        // Garante que o widget fique dentro do card de entrega.
-        if (!container.contains(widget)) {
-            container.appendChild(widget);
-        }
-
-        // Só configura quando os elementos internos estiverem disponíveis.
         const cepInput = widget.querySelector('input[name="cep_destino"]');
         const widgetForm = widget.querySelector("[data-cc-form]");
         const resultados = widget.querySelector(".cc-results");
 
-        if (cepInput && widgetForm && resultados) {
-            widgetObserver.disconnect();
+        if (!cepInput || !widgetForm || !resultados) return;
+
+        // Configura os eventos antes de mover o elemento.
+        if (widget.dataset.configurado !== "true") {
             configurarWidget(widget);
         }
+
+        // Posiciona o widget dentro do card.
+        if (!container.contains(widget)) {
+            container.appendChild(widget);
+        }
+
+        widgetObserver.disconnect();
     });
 
     widgetObserver.observe(document.body, {
@@ -143,17 +150,41 @@ document.addEventListener("DOMContentLoaded", () => {
     const widgetExistente = document.querySelector(".cepcerto-frete");
 
     if (widgetExistente) {
-        if (!container.contains(widgetExistente)) {
-            container.appendChild(widgetExistente);
-        }
+        const cepInput = widgetExistente.querySelector('input[name="cep_destino"]');
+        const widgetForm = widgetExistente.querySelector("[data-cc-form]");
+        const resultados = widgetExistente.querySelector(".cc-results");
 
-        if (
-            widgetExistente.querySelector('input[name="cep_destino"]') &&
-            widgetExistente.querySelector("[data-cc-form]") &&
-            widgetExistente.querySelector(".cc-results")
-        ) {
-            widgetObserver.disconnect();
+        if (cepInput && widgetForm && resultados) {
             configurarWidget(widgetExistente);
+
+            if (!container.contains(widgetExistente)) {
+                container.appendChild(widgetExistente);
+            }
+
+            widgetObserver.disconnect();
         }
     }
+
+    const checkoutForm = document.querySelector('form[action*="/checkout/finalizar"]');
+
+    checkoutForm.addEventListener("submit", event => {
+        const enderecoSelecionado = document.querySelector(
+            'input[name="enderecoId"]:checked'
+        );
+
+        const cep = enderecoSelecionado?.dataset.cep?.replace(/\D/g, "") || "";
+        const freteServico = freteServicoInput.value.trim();
+
+        if (cep.length !== 8 || !freteServico) {
+            event.preventDefault();
+
+            Swal.fire({
+                icon: "warning",
+                title: "Frete não selecionado",
+                text: "Selecione um CEP válido e uma opção de frete antes de continuar.",
+                confirmButtonText: "Entendi",
+                confirmButtonColor: "#212529"
+            });
+        }
+    });
 });

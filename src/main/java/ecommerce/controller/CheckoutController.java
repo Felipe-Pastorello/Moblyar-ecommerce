@@ -68,15 +68,16 @@ public class CheckoutController {
     }
 
     @PostMapping("/checkout/finalizar")
-    public String finalizar(
-            @RequestParam Long enderecoId,
-            @RequestParam(defaultValue = "0") BigDecimal freteValor,
-            @RequestParam(required = false) String freteServico,
-            Authentication authentication,
-            RedirectAttributes redirectAttributes,
-            HttpSession session) {
+    public String finalizar(@RequestParam Long enderecoId, @RequestParam(defaultValue = "0") BigDecimal freteValor, @RequestParam(required = false) String freteServico, Authentication authentication, RedirectAttributes redirectAttributes, HttpSession session) {
 
         try {
+            if (freteValor == null || freteValor.compareTo(BigDecimal.ZERO) < 0
+                    || freteServico == null || freteServico.isBlank()) {
+                throw new IllegalArgumentException(
+                        "Selecione uma opção de frete válida antes de continuar."
+                );
+            }
+
             Pedidos pedido = pedidoService.criarPedido(
                     authentication.getName(),
                     enderecoId
@@ -99,22 +100,16 @@ public class CheckoutController {
     }
 
     @GetMapping("/checkout/pagamento/{id}")
-    public String pagamento(
-            @PathVariable Long id,
-            Authentication authentication,
-            Model model,
-            HttpSession session) {
+    public String pagamento(@PathVariable Long id, Authentication authentication, Model model, HttpSession session) {
 
-        Pedidos pedido = pedidoRepository.findById(id)
-                .orElseThrow(() ->
+        Pedidos pedido = pedidoRepository.findById(id).orElseThrow(() ->
                         new org.springframework.web.server.ResponseStatusException(
                                 org.springframework.http.HttpStatus.NOT_FOUND,
                                 "Pedido não encontrado."
                         )
                 );
 
-        if (!pedido.getUsuario().getEmail()
-                .equals(authentication.getName())) {
+        if (!pedido.getUsuario().getEmail().equals(authentication.getName())) {
             throw new org.springframework.web.server.ResponseStatusException(
                     org.springframework.http.HttpStatus.FORBIDDEN
             );
@@ -137,11 +132,7 @@ public class CheckoutController {
     }
 
     @PostMapping("/checkout/pagamento/{id}/iniciar")
-    public String iniciarPagamento(
-            @PathVariable Long id,
-            Authentication authentication,
-            RedirectAttributes redirectAttributes,
-            HttpSession session) {
+    public String iniciarPagamento(@PathVariable Long id, Authentication authentication, RedirectAttributes redirectAttributes, HttpSession session) {
 
         try {
             BigDecimal freteValor = BigDecimal.ZERO;

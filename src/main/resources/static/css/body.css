@@ -62,3 +62,7 @@
 .page-link {
     color: var(--bs-brand);
 }
+
+.btn-cart:hover {
+    color: white !important;
+}
