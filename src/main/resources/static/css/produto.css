@@ -5,8 +5,7 @@
 
 
 /* ==========================================
-   IMAGEM PRINCIPAL
-========================================== */
+   IMAGEM PRINCIPAL*/
 
 .produto-imagem-container {
     width: 100%;
@@ -41,8 +40,7 @@
 
 
 /* ==========================================
-   MINIATURAS
-========================================== */
+   MINIATURAS */
 
 .produto-miniaturas {
     display: flex;
@@ -71,10 +69,23 @@
     object-fit: cover;
 }
 
+.miniatura-interativa {
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.miniatura-interativa:hover {
+    opacity: 0.7;
+}
+
+.miniatura-ativa {
+    outline: 2px solid #dc3545;
+    outline-offset: 2px;
+}
+
 
 /* ==========================================
-   INFORMAÇÕES
-========================================== */
+   INFORMAÇÕES */
 
 .produto-informacoes {
     padding-top: 5px;
@@ -105,8 +116,7 @@
 
 
 /* ==========================================
-   QUANTIDADE
-========================================== */
+   QUANTIDADE */
 
 .quantidade-container {
     display: inline-flex;
@@ -137,8 +147,7 @@
 
 
 /* ==========================================
-   BOTÕES
-========================================== */
+   BOTÕES */
 
 .btn-red {
     background-color: #e00000;
@@ -154,8 +163,7 @@
 
 
 /* ==========================================
-   BENEFÍCIOS
-========================================== */
+   BENEFÍCIOS */
 
 .lista-beneficios {
     list-style: none;
@@ -172,66 +180,6 @@
 
 .lista-beneficios i {
     margin-right: 6px;
-}
-
-
-/* ==========================================
-   PRODUTOS RELACIONADOS
-========================================== */
-
-.section-title {
-    font-size: 24px;
-    font-weight: 700;
-}
-
-.produto-card {
-    overflow: hidden;
-
-    border-radius: 8px;
-
-    background-color: white;
-
-    transition: transform .2s ease,
-    box-shadow .2s ease;
-}
-
-.produto-card:hover {
-    transform: translateY(-3px);
-
-    box-shadow: 0 5px 20px rgba(0,0,0,.08);
-}
-
-.produto-card-imagem {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-
-    overflow: hidden;
-}
-
-.produto-card-imagem img {
-    width: 100%;
-    height: 100%;
-
-    object-fit: cover;
-}
-
-.produto-card .card-body {
-    padding: 15px;
-}
-
-.produto-card .card-title {
-    color: #111;
-
-    font-size: 16px;
-    font-weight: 600;
-}
-
-.produto-card-preco {
-    color: #e00000;
-
-    font-weight: 700;
-
-    margin-bottom: 0;
 }
 
 

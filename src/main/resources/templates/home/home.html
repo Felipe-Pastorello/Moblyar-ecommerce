@@ -80,10 +80,10 @@
         </h2>
         <div class="row g-3 justify-content-center">
             <div class="col-6 col-md" th:each="categoria : ${categorias}">
-                <a th:href="@{/produtos(categoria=${categoria.id})}" class="category-card">
-                    <span th:text="${categoria.nome}">
-                        Categoria
-                    </span>
+                <a th:href="@{/buscar(categoriaId=${categoria.id})}" class="category-card">
+                <span th:text="${categoria.nome}">
+                 Categoria
+                </span>
                 </a>
             </div>
         </div>

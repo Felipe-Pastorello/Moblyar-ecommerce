@@ -1,100 +1,65 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    // =====================================
+
     // QUANTIDADE
-    // =====================================
+    const btnDiminuir = document.getElementById("btnDiminuir");
+    const btnAumentar = document.getElementById("btnAumentar");
+    const quantidadeElement = document.getElementById("quantidade");
+    const quantidadeInput = document.getElementById("quantidadeInput");
+    const quantidadeContainer = document.querySelector(".quantidade-container");
 
-    const btnDiminuir =
-        document.getElementById("btnDiminuir");
+    const estoqueDisponivel = Number(quantidadeContainer.dataset.estoque);
 
-    const btnAumentar =
-        document.getElementById("btnAumentar");
-
-    const quantidadeElement =
-        document.getElementById("quantidade");
-
-    const quantidadeInput =
-        document.getElementById("quantidadeInput");
-
-
-    let quantidade = 1;
-
+    let quantidade = estoqueDisponivel > 0 ? 1 : 0;
 
     function atualizarQuantidade() {
-
         quantidadeElement.textContent = quantidade;
-
         quantidadeInput.value = quantidade;
 
+        btnDiminuir.disabled = quantidade <= 1;
+        btnAumentar.disabled = quantidade >= estoqueDisponivel;
     }
 
-
     btnDiminuir.addEventListener("click", () => {
-
         if (quantidade > 1) {
-
             quantidade--;
-
             atualizarQuantidade();
-
         }
-
     });
-
 
     btnAumentar.addEventListener("click", () => {
-
-        quantidade++;
-
-        atualizarQuantidade();
-
+        if (quantidade < estoqueDisponivel) {
+            quantidade++;
+            atualizarQuantidade();
+        }
     });
 
+    atualizarQuantidade();
 
-    // =====================================
+
     // ADICIONAR AO CARRINHO
-    // =====================================
-
-    const formAdicionarCarrinho =
-        document.getElementById(
-            "formAdicionarCarrinho"
-        );
-
+    const formAdicionarCarrinho = document.getElementById("formAdicionarCarrinho");
 
     if (!formAdicionarCarrinho) {
         return;
     }
 
-
-    formAdicionarCarrinho.addEventListener(
-        "submit",
-        async event => {
+    formAdicionarCarrinho.addEventListener("submit", async event => {
 
             event.preventDefault();
 
-
-            const botao =
-                formAdicionarCarrinho.querySelector(
-                    'button[type="submit"]'
-                );
-
+            const botao = formAdicionarCarrinho.querySelector('button[type="submit"]');
 
             // Impede múltiplos cliques
-
             if (botao.disabled) {
                 return;
             }
 
-
             botao.disabled = true;
-
 
             try {
 
-                // =====================================
                 // CSRF
-                // =====================================
-
                 const csrfToken =
                     document.querySelector(
                         'meta[name="_csrf"]'
@@ -118,20 +83,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
 
-                // =====================================
                 // DADOS DO FORMULÁRIO
-                // =====================================
-
                 const formData =
                     new FormData(
                         formAdicionarCarrinho
                     );
 
 
-                // =====================================
                 // ADICIONAR PRODUTO
-                // =====================================
-
                 const response = await fetch(
                     formAdicionarCarrinho.action,
                     {
@@ -141,22 +100,13 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                 );
 
-
-                // =====================================
-                // USUÁRIO NÃO LOGADO
-                // =====================================
-
+                // USUÁRIO NÃO LOGADo
                 if (response.status === 401) {
 
                     window.location.href = "/login";
 
                     return;
                 }
-
-
-                // =====================================
-                // OUTRO ERRO
-                // =====================================
 
                 if (!response.ok) {
 
@@ -167,24 +117,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
 
-                // =====================================
                 // ABRIR CARRINHO
-                // =====================================
-
-                const offcanvas =
-                    document.getElementById(
-                        "carrinhoOffcanvas"
-                    );
-
+                const offcanvas = document.getElementById("carrinhoOffcanvas");
 
                 if (offcanvas) {
 
-                    const offcanvasInstance =
-                        bootstrap.Offcanvas.getOrCreateInstance(
-                            offcanvas
-                        );
-
-
+                    const offcanvasInstance = bootstrap.Offcanvas.getOrCreateInstance(offcanvas);
                     offcanvasInstance.show();
 
                 }
@@ -204,5 +142,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
         }
     );
+
+    // GALERIA DE IMAGENS
+    const imagemPrincipal = document.getElementById("imagemPrincipal");
+
+    const miniaturas = document.querySelectorAll(".miniatura-interativa");
+
+    miniaturas.forEach(miniatura => {
+        miniatura.addEventListener("click", () => {
+            imagemPrincipal.src = miniatura.dataset.imagem;
+
+            miniaturas.forEach(img => {
+                img.classList.remove("miniatura-ativa");
+            });
+
+            miniatura.classList.add("miniatura-ativa");
+        });
+    });
 
 });
