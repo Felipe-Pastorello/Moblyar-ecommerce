@@ -127,11 +127,7 @@ public class PedidoService {
     }
 
     @Transactional
-    public String obterLinkPagamento(
-            Long pedidoId,
-            String email,
-            BigDecimal freteValor,
-            String freteServico) {
+    public String obterLinkPagamento(Long pedidoId, String email, BigDecimal freteValor, String freteServico) {
 
         Pedidos pedido = pedidoRepository.findById(pedidoId)
                 .orElseThrow(() -> new ResponseStatusException(
@@ -289,5 +285,39 @@ public class PedidoService {
         }
 
         pedido.setEstoqueDevolvido(true);
+    }
+
+    @Transactional
+    public void solicitarCancelamento(Long pedidoId, String email) {
+
+        Pedidos pedido = pedidoRepository.findById(pedidoId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Pedido não encontrado."
+                ));
+
+        if (!pedido.getUsuario().getEmail().equals(email)) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "Você não tem permissão para solicitar o cancelamento deste pedido."
+            );
+        }
+
+        if (pedido.getStatus() != StatusPedido.PENDENTE
+                && pedido.getStatus() != StatusPedido.PAGO) {
+            throw new IllegalStateException(
+                    "Não é possível solicitar o cancelamento deste pedido."
+            );
+        }
+
+        if (pedido.isCancelamentoSolicitado()) {
+            throw new IllegalStateException(
+                    "O cancelamento deste pedido já foi solicitado."
+            );
+        }
+
+        pedido.setCancelamentoSolicitado(true);
+
+        pedidoRepository.save(pedido);
     }
 }

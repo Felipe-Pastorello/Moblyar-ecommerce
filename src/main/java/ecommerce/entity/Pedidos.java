@@ -45,4 +45,7 @@ public class Pedidos {
 
     @Column(nullable = false)
     private boolean estoqueDevolvido = false;
+
+    @Column(nullable = false)
+    private boolean cancelamentoSolicitado = false;
 }

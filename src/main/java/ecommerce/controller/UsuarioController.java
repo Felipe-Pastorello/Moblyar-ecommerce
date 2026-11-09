@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -174,11 +175,7 @@ public class UsuarioController {
     }
 
     @GetMapping("/perfil/enderecos/{id}/editar")
-    public String editarEndereco(
-            @PathVariable Long id,
-            Authentication authentication,
-            Model model,
-            RedirectAttributes redirectAttributes) {
+    public String editarEndereco(@PathVariable Long id, Authentication authentication, Model model, RedirectAttributes redirectAttributes) {
 
         Usuario usuario = usuarioAutenticado(authentication);
 
@@ -201,11 +198,7 @@ public class UsuarioController {
     }
 
     @PostMapping("/perfil/enderecos/{id}")
-    public String atualizarEndereco(
-            @PathVariable Long id,
-            Authentication authentication,
-            @ModelAttribute Endereco endereco,
-            RedirectAttributes redirectAttributes) {
+    public String atualizarEndereco(@PathVariable Long id, Authentication authentication, @ModelAttribute Endereco endereco, RedirectAttributes redirectAttributes) {
 
         Usuario usuario = usuarioAutenticado(authentication);
 
@@ -227,10 +220,7 @@ public class UsuarioController {
     }
 
     @PostMapping("/perfil/enderecos/{id}/excluir")
-    public String excluirEndereco(
-            @PathVariable Long id,
-            Authentication authentication,
-            RedirectAttributes redirectAttributes) {
+    public String excluirEndereco(@PathVariable Long id, Authentication authentication, RedirectAttributes redirectAttributes) {
 
         Usuario usuario = usuarioAutenticado(authentication);
 
@@ -259,5 +249,33 @@ public class UsuarioController {
         }
 
         return service.buscarPorEmail(authentication.getName());
+    }
+
+    @PostMapping("/perfil/pedidos/{id}/cancelamento")
+    public String solicitarCancelamento(@PathVariable Long id, Authentication authentication, RedirectAttributes redirectAttributes) {
+
+        Usuario usuario = usuarioAutenticado(authentication);
+
+        if (usuario == null) {
+            return "redirect:/login";
+        }
+
+        try {
+            pedidoService.solicitarCancelamento(id, usuario.getEmail());
+
+            redirectAttributes.addFlashAttribute(
+                    "sucesso",
+                    "Sua solicitação de cancelamento foi registrada."
+            );
+
+        } catch (IllegalStateException | ResponseStatusException e) {
+
+            redirectAttributes.addFlashAttribute(
+                    "erro",
+                    e.getMessage()
+            );
+        }
+
+        return "redirect:/perfil?aba=pedidos";
     }
 }
